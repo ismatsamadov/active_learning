@@ -549,6 +549,29 @@ exact paper; each note says where the code uses it.
 | [Settles (2012). *Active Learning.* Synthesis Lectures / Morgan & Claypool.](https://doi.org/10.2200/S00429ED1V01Y201207AIM018) | the pool-based AL framework ([`loop.py`](alner/al/loop.py)) |
 | [Tjong Kim Sang & De Meulder (2003). *Introduction to the CoNLL-2003 Shared Task…* CoNLL.](https://aclanthology.org/W03-0419/) | entity-level F1 evaluation ([`metrics.py`](alner/ner/metrics.py)) |
 
+### 13.1 Reference usage map (code ↔ thesis)
+
+For each reference: the exact idea borrowed, **where it lives in the code** (file:line — the
+code also carries an inline citation comment at that spot), and **where it is cited in the
+thesis** (section → page, from the thesis Table of Contents). Ma & Hovy is the only one used
+in code but not in the thesis (it backs the character-CNN we added).
+
+| Reference | Idea / thought used | In the code (file : line) | In the thesis (section · page) |
+| --- | --- | --- | --- |
+| **Lample et al. (2016)** | the BiLSTM-CRF architecture as the NER baseline | [`alner/ner/model.py:22`](alner/ner/model.py#L22) (`BiLSTMCRF`) | §2.2 Baseline NER Model · **p.43**; §1.4 · p.32 |
+| **Hochreiter & Schmidhuber (1997)** | the LSTM cell (long-range dependencies) | [`alner/ner/model.py:34`](alner/ner/model.py#L34) (`nn.LSTM`) | §2.2 · **p.43** ("Long Short-Term Memory … 1997") |
+| **Graves & Schmidhuber (2005)** | bidirectional processing (past + future context) | [`alner/ner/model.py:34`](alner/ner/model.py#L34) (`bidirectional=True`) | §2.2 · **p.43** ("bi-directional capability") |
+| **Lafferty et al. (2001)** | the CRF: forward-algorithm partition + Viterbi + valid-transition constraints | [`alner/ner/crf.py:25`](alner/ner/crf.py#L25) (`CRF`), `:74` `_partition`, `:90` `decode` | §2.2 · **p.43**; §1.1 Foundations · p.12 |
+| **Ma & Hovy (2016)** | the character-CNN over tokens (handles £39, 5-week, 24,000) | [`alner/ner/model.py:29`](alner/ner/model.py#L29) (`char_cnn`) | *not cited in the thesis — our addition* |
+| **Lewis & Gale (1994)** | uncertainty / least-confidence query (`1 − P(best path)`) | [`alner/ner/crf.py:144`](alner/ner/crf.py#L144) (`least_confidence`); [`alner/al/strategies.py:86`](alner/al/strategies.py#L86) | §1.3 Active Learning in NLP · **p.23**; §2.3 · p.45; Intro · p.6 |
+| **Sener & Savarese (2018)** | core-set / k-center-greedy diversity selection | [`alner/al/strategies.py:47`](alner/al/strategies.py#L47) (`k_center_greedy`) | §1.3 · **p.23**; §1.4 · p.32; §2.3 · p.45 |
+| **Shen et al. (2018)** | MNLP (length-normalised) sequence uncertainty + uncertainty×diversity for NER | [`alner/ner/crf.py:137`](alner/ner/crf.py#L137) (`best_path_normalized_logprob`) | §1.3 · **p.23** ("Shen et al. (2018) validate…") |
+| **Settles (2012)** | the pool-based AL loop (seed → query → annotate → retrain) | [`alner/al/loop.py:27`](alner/al/loop.py#L27) (`run_active_learning`) | Intro · p.6; §1.2 · p.17; §1.3 · **p.23**; §1.4 · p.32; §2.1 · p.36; §2.3 · p.45 |
+| **Tjong Kim Sang & De Meulder (2003)** | entity-level (CoNLL) F1 + the BIO tagging scheme | [`alner/ner/metrics.py:16`](alner/ner/metrics.py#L16) (`bio_spans`), `:37` `prf`; [`alner/__init__.py`](alner/__init__.py) (`BIO_TAGS`) | §1.2 Challenges & Evaluation · **p.17**; §2.1 · p.36 (BIO); Intro · p.6 |
+
+> Page numbers are from the thesis Table of Contents; a reference cited in several sections
+> lists the primary one in **bold**. The `#L<n>` anchors open the exact code line on GitHub.
+
 ---
 
 <sub>Implementation accompanying the UNEC master thesis. Runs on the real FutureLearn dataset

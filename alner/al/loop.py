@@ -27,7 +27,11 @@ def _embeddings_for(model, records, vocab, device):
 def run_active_learning(pool: List[dict], test: List[dict], vocab: Vocab, cfg,
                         strategy: str, seed: int, device: str,
                         verbose: bool = False) -> Dict:
-    """Run one AL trajectory; return per-iteration test metrics + label counts."""
+    """Run one AL trajectory; return per-iteration test metrics + label counts.
+
+    Pool-based active-learning loop (Settles, 2012): seed -> train -> score pool ->
+    query -> annotate -> add -> retrain, until the labelling budget is spent.
+    """
     rng = np.random.default_rng(seed)
     al = cfg.al
     n_pool = len(pool)

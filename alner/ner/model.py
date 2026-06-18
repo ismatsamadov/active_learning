@@ -26,10 +26,11 @@ class BiLSTMCRF(nn.Module):
         m = cfg
         self.word_emb = nn.Embedding(vocab.n_words, m.word_emb_dim, padding_idx=0)
         self.char_emb = nn.Embedding(vocab.n_chars, m.char_emb_dim, padding_idx=0)
-        self.char_cnn = nn.Conv1d(m.char_emb_dim, m.char_channels,
+        self.char_cnn = nn.Conv1d(m.char_emb_dim, m.char_channels,  # char-CNN: Ma & Hovy (2016)
                                   kernel_size=m.char_kernel, padding=m.char_kernel // 2)
         self.dropout = nn.Dropout(m.dropout)
         lstm_in = m.word_emb_dim + m.char_channels
+        # LSTM: Hochreiter & Schmidhuber (1997); bidirectional: Graves & Schmidhuber (2005)
         self.lstm = nn.LSTM(lstm_in, m.lstm_hidden, num_layers=m.lstm_layers,
                             batch_first=True, bidirectional=True,
                             dropout=m.dropout if m.lstm_layers > 1 else 0.0)
