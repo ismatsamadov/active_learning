@@ -1,0 +1,10 @@
+# Core ML / data stack for the Active-Learning-for-NER implementation
+# (BiLSTM-CRF is implemented from scratch in src/ner/crf.py — no CRF dependency needed)
+torch>=2.0
+numpy>=1.24
+pandas>=2.0
+scikit-learn>=1.3
+matplotlib>=3.7
+seaborn>=0.12
+seqeval>=1.2.2     # independent cross-check of our entity-level F1
+tqdm>=4.65

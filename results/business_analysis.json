@@ -1,0 +1,256 @@
+{
+  "fig5": {
+    "Language": {
+      "n": 58,
+      "avg_enroll": 32958
+    },
+    "Study Skills": {
+      "n": 40,
+      "avg_enroll": 13504
+    },
+    "History": {
+      "n": 55,
+      "avg_enroll": 13128
+    },
+    "Psychology & Mental Health": {
+      "n": 60,
+      "avg_enroll": 11604
+    },
+    "Teaching": {
+      "n": 60,
+      "avg_enroll": 10734
+    },
+    "Literature": {
+      "n": 30,
+      "avg_enroll": 10495
+    },
+    "Law": {
+      "n": 28,
+      "avg_enroll": 10211
+    },
+    "Politics & Society": {
+      "n": 40,
+      "avg_enroll": 9485
+    },
+    "Business & Management": {
+      "n": 216,
+      "avg_enroll": 9125
+    },
+    "Nature & Environment": {
+      "n": 45,
+      "avg_enroll": 9040
+    },
+    "Healthcare & Medicine": {
+      "n": 130,
+      "avg_enroll": 8813
+    },
+    "Creative Arts & Media": {
+      "n": 45,
+      "avg_enroll": 6886
+    },
+    "Science, Engineering & Maths": {
+      "n": 80,
+      "avg_enroll": 6640
+    },
+    "IT & Computer Science": {
+      "n": 113,
+      "avg_enroll": 5347
+    }
+  },
+  "fig6_7": {
+    "free_mean": 3748,
+    "paid_mean": 55006,
+    "ratio": 14.68,
+    "realised_revenue": 426685877,
+    "conversion_opportunity": 82206765
+  },
+  "fig8": {
+    "19": {
+      "n": 6,
+      "avg_enroll": 58318
+    },
+    "24": {
+      "n": 3,
+      "avg_enroll": 4403
+    },
+    "29": {
+      "n": 3,
+      "avg_enroll": 22695
+    },
+    "39": {
+      "n": 29,
+      "avg_enroll": 61325
+    },
+    "49": {
+      "n": 6,
+      "avg_enroll": 41578
+    },
+    "59": {
+      "n": 34,
+      "avg_enroll": 57049
+    },
+    "69": {
+      "n": 7,
+      "avg_enroll": 69686
+    },
+    "79": {
+      "n": 30,
+      "avg_enroll": 68459
+    },
+    "89": {
+      "n": 5,
+      "avg_enroll": 23636
+    },
+    "99": {
+      "n": 5,
+      "avg_enroll": 20963
+    },
+    "109": {
+      "n": 1,
+      "avg_enroll": 15585
+    },
+    "120": {
+      "n": 2,
+      "avg_enroll": 13434
+    }
+  },
+  "fig9": {
+    "1": 1207,
+    "2": 12677,
+    "3": 17033,
+    "4": 14467,
+    "5": 13561,
+    "6": 6524,
+    "7": 4329,
+    "8": 1357,
+    "9": 3860,
+    "10": 1319,
+    "11": 897
+  },
+  "fig10": {
+    "University of Leeds": {
+      "total": 1812825,
+      "per_course": 19285,
+      "n": 94
+    },
+    "University of Groningen": {
+      "total": 633652,
+      "per_course": 79206,
+      "n": 8
+    },
+    "Institute of Technology Oslo": {
+      "total": 432140,
+      "per_course": 48016,
+      "n": 9
+    },
+    "Medical School of Dublin": {
+      "total": 363145,
+      "per_course": 25939,
+      "n": 14
+    },
+    "School of Business Munich": {
+      "total": 346224,
+      "per_course": 24730,
+      "n": 14
+    },
+    "School of Arts Riga": {
+      "total": 315903,
+      "per_course": 22564,
+      "n": 14
+    },
+    "School of Arts Bilbao": {
+      "total": 313273,
+      "per_course": 28479,
+      "n": 11
+    },
+    "Taipei Medical University": {
+      "total": 307409,
+      "per_course": 5693,
+      "n": 54
+    },
+    "Medical School of Seville": {
+      "total": 246343,
+      "per_course": 17596,
+      "n": 14
+    },
+    "Polytechnic of Pecs": {
+      "total": 244086,
+      "per_course": 27121,
+      "n": 9
+    },
+    "Medical School of Geneva": {
+      "total": 207910,
+      "per_course": 14851,
+      "n": 14
+    },
+    "Vrije Universiteit Amsterdam": {
+      "total": 200245,
+      "per_course": 20024,
+      "n": 10
+    }
+  },
+  "fig11": {
+    "stars": [
+      "History",
+      "Language",
+      "Literature",
+      "Psychology & Mental Health",
+      "Study Skills",
+      "Teaching"
+    ],
+    "demand_median": 9848,
+    "satisfaction_median": 4.7
+  },
+  "executive_summary": [
+    {
+      "priority": "🔴 Critical",
+      "finding": "Language shows the highest demand (~32,958/course) on only 58 courses",
+      "action": "Commission more Language courses with high-performing partners"
+    },
+    {
+      "priority": "🔴 Critical",
+      "finding": "Paid courses average 14.68x the enrollment of free courses",
+      "action": "Evaluate converting top-performing free courses into paid offerings"
+    },
+    {
+      "priority": "🔴 Critical",
+      "finding": "~86.9% of courses lack learner ratings",
+      "action": "Implement a systematic learner feedback/review mechanism"
+    },
+    {
+      "priority": "🟠 High",
+      "finding": "University of Groningen is the most efficient partner (~79,206/course)",
+      "action": "Expand collaboration with high-efficiency partners"
+    },
+    {
+      "priority": "🟠 High",
+      "finding": "The £59 mid-tier underperforms (~57,049/course) vs £39 (~61,325) and £79 (~68,459)",
+      "action": "Reposition mid-tier pricing toward clearer value tiers"
+    },
+    {
+      "priority": "🟠 High",
+      "finding": "3-week courses achieve the highest engagement (~17,033)",
+      "action": "Prioritise course designs in the 2-5 week range"
+    },
+    {
+      "priority": "🟡 Medium",
+      "finding": "Advanced content is priced similarly to introductory content",
+      "action": "Introduce differentiated pricing for advanced-level courses (£79-£99)"
+    },
+    {
+      "priority": "🟡 Medium",
+      "finding": "IT & Computer Science has high supply (113 courses) but modest demand (~5,347)",
+      "action": "Review content focus; refocus on high-demand subdomains"
+    },
+    {
+      "priority": "🟡 Medium",
+      "finding": "Business & Management is the largest catalogue (216 courses)",
+      "action": "Quality/relevance assessment before further expansion"
+    },
+    {
+      "priority": "🟢 Ongoing",
+      "finding": "A small set of courses drive disproportionate enrollment (top-decile >22,820)",
+      "action": "Maintain and extend high-performing courses with updates/advanced modules"
+    }
+  ]
+}
