@@ -10,8 +10,8 @@ FAST="${1:-}"
 echo "### 0. CRF correctness tests"
 $PY tests/test_crf.py
 
-echo "### 1. Generate + validate dataset"
-$PY scripts/01_generate_data.py
+echo "### 1. Prepare real dataset + build NER corpus"
+$PY scripts/01_prepare_data.py
 
 echo "### 2. Full-data baseline"
 $PY scripts/03_run_baseline.py $FAST --device cpu

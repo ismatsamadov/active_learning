@@ -12,6 +12,8 @@ import re
 from collections import Counter, defaultdict
 from typing import Dict, List, Optional
 
+import pandas as pd
+
 from ..data.generate import CAT_VARIANTS
 
 # reverse map: any category surface variant (lowercased) -> canonical category
@@ -59,7 +61,7 @@ def parse_category(s: str) -> Optional[str]:
 def extract_course_fields(records_for_course: List[dict], preds: Dict[int, List[str]]):
     """Aggregate predicted entities across a course's sentences into one field set
     (majority vote per field)."""
-    orgs, cats, prices, durs, enrolls = [], [], [], [], []
+    orgs, cats, prices, durs, enrolls, levels = [], [], [], [], [], []
     for r in records_for_course:
         tags = preds[id(r)]
         for etype, surf in spans_from_bio(r["tokens"], tags):
@@ -76,10 +78,13 @@ def extract_course_fields(records_for_course: List[dict], preds: Dict[int, List[
             elif etype == "ENROLL":
                 e = parse_enroll(surf)
                 if e is not None: enrolls.append(e)
+            elif etype == "LEVEL":
+                levels.append(surf.strip())
 
     def mode(xs): return Counter(xs).most_common(1)[0][0] if xs else None
     return dict(partner=mode(orgs), category=mode(cats), price=mode(prices),
-                duration_weeks=mode(durs), enrollment_count=mode(enrolls))
+                duration_weeks=mode(durs), enrollment_count=mode(enrolls),
+                level=mode(levels))
 
 
 def reconstruct_courses_from_ner(records: List[dict], pred_tags: List[List[str]]):
@@ -155,27 +160,37 @@ def evaluate_field_recovery(test_records: List[dict], pred_tags: List[List[str]]
             continue
         ext = extract_course_fields(recs, preds)
         t = truth[cid]
-        # categorical/numeric exact-match recovery
+
+        def _num(v):
+            try:
+                return None if pd.isna(v) else float(v)
+            except Exception:
+                return None
+
+        # (extracted, truth) per field; truth None -> field skipped for this course
         checks = {
-            "category": (ext["category"], t["category"]),
-            "price": (ext["price"], float(t["price"])),
-            "duration_weeks": (ext["duration_weeks"], int(t["duration_weeks"])),
-            "enrollment_count": (ext["enrollment_count"], int(t["enrollment_count"])),
-            "partner": (ext["partner"], t["partner"]),
+            "partner": (ext["partner"], t["partner"], "str"),
+            "category": (ext["category"], t["category"], "str"),
+            "price": (ext["price"], _num(t["price"]), "num"),
+            "duration_weeks": (ext["duration_weeks"], _num(t["duration_weeks"]), "num"),
+            "enrollment_count": (ext["enrollment_count"], _num(t["enrollment_count"]), "num"),
+            "level": (ext["level"], t.get("level"), "str"),
         }
-        for field, (got, want) in checks.items():
-            if got is None:
-                total[field] += 1
-                continue
+        for field, (got, want, kind) in checks.items():
+            if want is None or (isinstance(want, float) and pd.isna(want)):
+                continue                     # truth missing -> not counted
             total[field] += 1
-            ok = (got == want) if field != "partner" else (str(got) == str(want))
+            if got is None:
+                continue
+            ok = (float(got) == want) if kind == "num" else (str(got) == str(want))
             hits[field] += int(ok)
         if len(examples) < 6:
             examples.append(dict(course_id=int(cid),
                                  text=" ".join(recs[0]["tokens"]),
-                                 extracted=ext,
-                                 truth={k: t[k] for k in
-                                        ["partner", "category", "price",
-                                         "duration_weeks", "enrollment_count"]}))
+                                 extracted={k: (None if (isinstance(v, float) and pd.isna(v)) else v)
+                                            for k, v in ext.items()},
+                                 truth={k: (None if pd.isna(t[k]) else t[k]) for k in
+                                        ["partner", "category", "price", "duration_weeks",
+                                         "enrollment_count", "level"]}))
     recovery = {f: round(hits[f] / total[f], 4) if total[f] else None for f in total}
     return dict(field_recovery=recovery, n_courses=len(by_course), examples=examples)

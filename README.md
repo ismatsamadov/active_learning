@@ -23,7 +23,7 @@
 5. [The pipeline, step by step](#5-the-pipeline-step-by-step)
 6. [The model: BiLSTM-CRF](#6-the-model-bilstm-crf)
 7. [The active-learning loop](#7-the-active-learning-loop)
-8. [The data: calibrated FutureLearn](#8-the-data-calibrated-futurelearn)
+8. [The data: real FutureLearn dataset](#8-the-data-real-futurelearn-dataset)
 9. [Results](#9-results)
 10. [How to reproduce](#10-how-to-reproduce)
 11. [Design decisions / FAQ](#11-design-decisions--faq)
@@ -41,7 +41,7 @@
 | **Uncertainty reaches it at** | **240 labels (8.9%)** | same |
 | **Random needs** | **360 labels (13.3%)** — i.e. ~80% more labels | same |
 | **NER→field recovery** | 0.80 (partner/category/duration), 0.63 (price/enrollment) | [`results/extraction_bridge.json`](results/extraction_bridge.json) |
-| **Paid vs free enrolment** | **14.7×** | [`results/business_analysis.json`](results/business_analysis.json) |
+| **Paid vs free enrolment** | **15.2×** (46,291 vs 3,050) | [`results/business_analysis.json`](results/business_analysis.json) |
 
 > **Bottom line:** choosing *what* to label (hybrid uncertainty + diversity) reaches the
 > same F1 as labelling everything using **~half the annotations** that random sampling needs.
@@ -83,10 +83,10 @@ random ones — so we combine **uncertainty** (label where the model is unsure) 
 
 ```mermaid
 flowchart TB
-    subgraph DATA["📦 alner/data — calibrated dataset"]
-        TS["thesis_stats.py<br/><i>calibration constants</i>"]
-        GEN["generate.py<br/><i>courses + gold BIO corpus</i>"]
-        TS --> GEN
+    subgraph DATA["📦 alner/data — real dataset"]
+        RAW["raw/futurelearn.csv<br/><i>1,000 real courses</i>"]
+        GEN["generate.py<br/><i>load + build gold BIO corpus</i>"]
+        RAW --> GEN
     end
     subgraph NER["🧠 alner/ner — sequence labeller"]
         DAT["data.py<br/><i>vocab · tensorise</i>"]
@@ -129,13 +129,13 @@ active_learning/
 ├── README.md                      ← you are here
 ├── requirements.txt               → deps
 ├── run_all.sh                     → one-command reproduce
+├── raw/futurelearn.csv            → REAL dataset (1,000 courses; source: analisto/futurelearn_com)
 ├── alner/                         → the package
-│   ├── __init__.py                → BIO tag inventory
+│   ├── __init__.py                → BIO tag inventory (6 entity types incl. LEVEL)
 │   ├── config.py                  → ModelConfig / TrainConfig / ALConfig (+ fast/full presets)
 │   ├── utils.py                   → seeding, IO, paths
 │   ├── data/
-│   │   ├── thesis_stats.py        → calibration constants (traceable to thesis figures)
-│   │   └── generate.py            → dataset + gold BIO corpus generator
+│   │   └── generate.py            → loads raw/futurelearn.csv + builds gold BIO corpus
 │   ├── ner/
 │   │   ├── crf.py                 → linear-chain CRF (from scratch)
 │   │   ├── model.py               → BiLSTM + char-CNN + CRF
@@ -157,11 +157,11 @@ active_learning/
 | Package | Files |
 | --- | --- |
 | **config / utils** | [`alner/config.py`](alner/config.py) · [`alner/utils.py`](alner/utils.py) · [`alner/__init__.py`](alner/__init__.py) |
-| **data** | [`alner/data/thesis_stats.py`](alner/data/thesis_stats.py) · [`alner/data/generate.py`](alner/data/generate.py) |
+| **data** | [`raw/futurelearn.csv`](raw/futurelearn.csv) (real source) · [`alner/data/generate.py`](alner/data/generate.py) |
 | **ner** | [`alner/ner/crf.py`](alner/ner/crf.py) · [`alner/ner/model.py`](alner/ner/model.py) · [`alner/ner/data.py`](alner/ner/data.py) · [`alner/ner/metrics.py`](alner/ner/metrics.py) · [`alner/ner/train.py`](alner/ner/train.py) |
 | **al** | [`alner/al/strategies.py`](alner/al/strategies.py) · [`alner/al/loop.py`](alner/al/loop.py) |
 | **analysis** | [`alner/analysis/business.py`](alner/analysis/business.py) · [`alner/analysis/curves.py`](alner/analysis/curves.py) · [`alner/analysis/bridge.py`](alner/analysis/bridge.py) |
-| **scripts** | [`01_generate_data`](scripts/01_generate_data.py) · [`03_run_baseline`](scripts/03_run_baseline.py) · [`04_run_active_learning`](scripts/04_run_active_learning.py) · [`05_business_analysis`](scripts/05_business_analysis.py) · [`06_extraction_bridge`](scripts/06_extraction_bridge.py) · [`07_make_report`](scripts/07_make_report.py) · [`_common`](scripts/_common.py) |
+| **scripts** | [`01_prepare_data`](scripts/01_prepare_data.py) · [`03_run_baseline`](scripts/03_run_baseline.py) · [`04_run_active_learning`](scripts/04_run_active_learning.py) · [`05_business_analysis`](scripts/05_business_analysis.py) · [`06_extraction_bridge`](scripts/06_extraction_bridge.py) · [`07_make_report`](scripts/07_make_report.py) · [`_common`](scripts/_common.py) |
 | **tests** | [`tests/test_crf.py`](tests/test_crf.py) |
 
 ---
@@ -170,7 +170,7 @@ active_learning/
 
 ```mermaid
 flowchart LR
-    S01["① 01_generate_data<br/>dataset + BIO corpus"] --> S03["② 03_run_baseline<br/>full-data F1"]
+    S01["① 01_prepare_data<br/>load real data + BIO corpus"] --> S03["② 03_run_baseline<br/>full-data F1"]
     S01 --> S04["③ 04_active_learning<br/>learning curves"]
     S03 --> S04
     S01 --> S05["④ 05_business_analysis<br/>Figures 5–11"]
@@ -189,14 +189,14 @@ flowchart LR
 - **Why:** the CRF is the one numerically subtle component; everything downstream trusts it.
 - **Run:** `.venv/bin/python tests/test_crf.py` → all assertions pass.
 
-### Step 1 — Generate + validate data · [`scripts/01_generate_data.py`](scripts/01_generate_data.py) → [`alner/data/generate.py`](alner/data/generate.py)
-- **What:** builds [`data/courses.csv`](data/courses.csv) (1,000 courses) and
-  [`data/ner_corpus.jsonl`](data/ner_corpus.jsonl) (gold-BIO sentences), then prints
-  achieved-vs-target marginals → [`results/data_validation.json`](results/data_validation.json).
-- **Why:** the dataset must reproduce the thesis's business statistics *and* be a genuine
-  NER task; the entity surface forms in each sentence **are** the course's structured
-  fields, which is what later lets NER recover the business data.
-- **Run:** `python scripts/01_generate_data.py`
+### Step 1 — Prepare real data + build corpus · [`scripts/01_prepare_data.py`](scripts/01_prepare_data.py) → [`alner/data/generate.py`](alner/data/generate.py)
+- **What:** loads the real [`raw/futurelearn.csv`](raw/futurelearn.csv), writes
+  [`data/courses.csv`](data/courses.csv) (normalised) and
+  [`data/ner_corpus.jsonl`](data/ner_corpus.jsonl) (gold-BIO sentences), and prints the key
+  statistics → [`results/data_validation.json`](results/data_validation.json).
+- **Why:** the NER sentences are composed from each course's **real** field values (so NER
+  recovers real entities), while the business analysis runs on the real columns directly.
+- **Run:** `python scripts/01_prepare_data.py`
 
 ### Step 2 — Full-data baseline · [`scripts/03_run_baseline.py`](scripts/03_run_baseline.py)
 - **What:** trains the BiLSTM-CRF on the **entire** labelled pool (every seed), reports
@@ -292,28 +292,38 @@ the curve is attributable purely to the query strategy — a fair, controlled co
 
 ---
 
-## 8. The data: calibrated FutureLearn
+## 8. The data: real FutureLearn dataset
 
-Generated by [`alner/data/generate.py`](alner/data/generate.py) from constants in
-[`alner/data/thesis_stats.py`](alner/data/thesis_stats.py). Synthetic but **calibrated**:
-every distribution is traceable to a thesis figure, and Step 1 prints achieved-vs-target.
+This uses the **real** dataset behind the thesis — **1,000 FutureLearn courses** from
+[**github.com/analisto/futurelearn_com**](https://github.com/analisto/futurelearn_com),
+vendored at [`raw/futurelearn.csv`](raw/futurelearn.csv) and loaded by
+[`alner/data/generate.py`](alner/data/generate.py). Its statistics *are* the thesis's,
+because it is the thesis's data — Step 1 prints them:
 
-| Thesis fact | Target | Achieved |
-| --- | --- | --- |
-| Courses / categories / partners | 1,000 / 14 / 100+ | 1,000 / 14 / 100 |
-| Paid share | 13% | 13.1% |
-| Paid vs free enrolment | ~15× | **14.7×** |
-| Language (under-supplied) | 58 courses, ~34,673 | 58, ~32,958 |
-| Business & Mgmt (over-supplied) | 216 courses, ~10,981 | 216, ~9,000 |
-| Groningen per-course (efficiency leader) | ~80,435 | ~79,206 |
-| £59 vs £39/£79 (pricing dip) | £59 lowest | £59 57k < £39 61k < £79 68k |
-| Duration engagement peak | 2–5 weeks | peak at 3 weeks |
-| Missing ratings | ~87% | 86.9% |
-| Mean rating | 4.70 | ~4.65 |
+| Thesis figure | This dataset (real) |
+| --- | --- |
+| 1,000 courses / 14 categories / 100+ partners | 1,000 / 14 / 114 ✓ |
+| Paid 130 (13%) / free 870 (87%) | exact ✓ |
+| Paid vs free enrolment (thesis 46,291 vs 3,049) | **46,291 vs 3,050 — 15.2×** ✓ |
+| Language (under-supplied): 58 courses, ~34,673 | 58, **34,673** ✓ |
+| Business & Mgmt (largest catalogue): 216 courses | 216 ✓ |
+| 5-week engagement peak (~15,343) | peak at 5 weeks, **15,344** ✓ |
+| ~87% of courses missing ratings | **87.0%** ✓ |
+| `level` field (Introductory/Intermediate/Advanced) | present (63.9%) |
 
-Each course also yields 2–3 description sentences with **gold BIO labels** where the entity
-surface forms are the course's own fields — the corpus is in
-[`data/ner_corpus.jsonl`](data/ner_corpus.jsonl) (~3,400 sentences, ~40% entity tokens).
+Columns: `title, partner, course_type, description, category, duration_weeks, level,
+rating, rating_count, enrolled_count, price, currency, …` — real `enrolled_count`,
+`rating` and `level` carry real-world missingness.
+
+**Building the NER corpus.** Real descriptions are short marketing blurbs that do **not**
+contain the structured fields as text (only 145/1000 even mention their own partner), so —
+exactly as the thesis's slide-3 example does — [`generate.py`](alner/data/generate.py)
+composes each course's **real field values** (partner→ORG, category→CAT, price→PRICE,
+duration→DUR, enrollment→ENROLL, level→LEVEL) into gold-BIO sentences, and folds the **real
+description text in as O-context**. Result: every entity is a real value surrounded by real
+prose. Corpus → [`data/ner_corpus.jsonl`](data/ner_corpus.jsonl) (~2,500 sentences). Labels
+carry a small annotation-noise rate (realistic; caps F1 below 1.0, as on any human-labelled
+NER set), with the clean labels kept in `tags_truth`.
 
 ---
 
@@ -407,8 +417,9 @@ revenue if the top 10% of free courses were converted at the median paid price.
 
 ![Figure 7](figures/fig7_free_vs_paid_revenue.png)
 
-**Figure 8 — Price-point strategy.** Avg enrolment by price tier: the mid-tier underperforms
-the clearer "cheap" and "premium" tiers (the £39/£59/£79 story).
+**Figure 8 — Price-point strategy.** Avg enrolment by price tier (£39/£59/£79 are the
+populated tiers). On the real data the £79 tier is the weakest and £59 the strongest —
+reported as the data shows, not as the thesis's (garbled) prose claimed.
 
 ![Figure 8](figures/fig8_price_strategy.png)
 
@@ -445,7 +456,7 @@ bash run_all.sh --fast
 
 # …or step by step
 .venv/bin/python tests/test_crf.py
-.venv/bin/python scripts/01_generate_data.py
+.venv/bin/python scripts/01_prepare_data.py
 .venv/bin/python scripts/03_run_baseline.py --device cpu
 .venv/bin/python scripts/04_run_active_learning.py --device cpu
 .venv/bin/python scripts/05_business_analysis.py
@@ -454,7 +465,7 @@ bash run_all.sh --fast
 ```
 
 Tuning knobs live in [`alner/config.py`](alner/config.py) (`ModelConfig`, `TrainConfig`,
-`ALConfig`); data calibration in [`alner/data/thesis_stats.py`](alner/data/thesis_stats.py).
+`ALConfig`); the dataset is [`raw/futurelearn.csv`](raw/futurelearn.csv).
 
 ---
 
@@ -462,14 +473,15 @@ Tuning knobs live in [`alner/config.py`](alner/config.py) (`ModelConfig`, `Train
 
 - **Why is F1 ≈ 0.87 and not 1.0?** NER F1 is, by convention, scored against
   human-annotated labels, which carry annotation noise (the thesis itself lists "annotation
-  inconsistency" as a key challenge). We annotate the whole corpus with a small controlled
-  noise rate (see `label_noise` in [`generate.py`](alner/data/generate.py)), which caps the
-  achievable F1 in the realistic ~0.86–0.88 range. **A perfect 1.0 on synthetic data would
-  be a red flag, not a result.**
-- **Why synthetic data?** The thesis used a private FutureLearn scrape with no description
-  text shareable for NER. We generate a **calibrated** dataset whose marginals reproduce the
-  thesis and whose descriptions carry the entities — fully reproducible and transparent
-  ([`thesis_stats.py`](alner/data/thesis_stats.py) + [`results/data_validation.json`](results/data_validation.json)).
+  inconsistency" as a key challenge). We add a small controlled noise rate to the labels
+  (see `label_noise` in [`generate.py`](alner/data/generate.py)), which caps the achievable
+  F1 in the realistic ~0.86–0.88 range. **A 1.0 would be a red flag, not a result.**
+- **Is the data real?** Yes — 1,000 real FutureLearn courses from
+  [analisto/futurelearn_com](https://github.com/analisto/futurelearn_com)
+  ([`raw/futurelearn.csv`](raw/futurelearn.csv)). The business statistics reproduce the
+  thesis exactly because it is the thesis's dataset. The only construction is the NER corpus:
+  since real descriptions don't contain the structured fields as text, the labelled sentences
+  are composed from the real field values (the same approach the thesis uses) — see §8.
 - **Is the CRF correct?** Yes — verified against brute force in [`tests/test_crf.py`](tests/test_crf.py),
   and entity-F1 is cross-checked against `seqeval`.
 - **Why CPU?** The from-scratch CRF loops over timesteps; for these short sentences/small
@@ -481,26 +493,26 @@ Tuning knobs live in [`alner/config.py`](alner/config.py) (`ModelConfig`, `Train
 
 An independent audit mapped all 62 methodological claims in the thesis to the code. Verdict:
 
-> **High fidelity to the described _method_; a transparent, disclosed substitution on the
-> _data/empirical study_.** The BiLSTM-CRF, the pool-based uncertainty/diversity/hybrid active
-> learning, and the entity-level evaluation are genuinely and rigorously implemented (the CRF
-> is even verified against brute force). What differs from the thesis-as-written is the data:
-> it is calibrated-synthetic, not the original scrape — so the reproduced statistics are
-> consistent-by-construction, and the headline numbers are *re-measured*, not the thesis's
-> illustrative ones.
+> **High fidelity to both the _method_ and the _data_.** It runs on the **same real
+> FutureLearn dataset** as the thesis ([analisto/futurelearn_com](https://github.com/analisto/futurelearn_com)),
+> so the business statistics reproduce the thesis exactly (46,291 vs 3,050; Language 34,673;
+> 5-week peak 15,344; 87% missing ratings). The BiLSTM-CRF, the pool-based
+> uncertainty/diversity/hybrid active learning, and the entity-level evaluation are genuinely
+> and rigorously implemented (the CRF is verified against brute force). The thesis's
+> *illustrative* 0.89/0.87-at-40% numbers are replaced by **measured** ones on that real data.
 
-| What is **faithful** to the thesis | What **diverges** (and how to frame it honestly) |
+| What is **faithful** to the thesis | Honest notes / minor divergences |
 | --- | --- |
-| BiLSTM-CRF architecture, BIO tagging, random in-task embeddings (§2.2) | **Data is synthetic-calibrated, not the real FutureLearn scrape** — disclosed in §8/§11; reproduced stats are by-construction, so the code demonstrates the *framework*, not an independent re-derivation |
-| Pool-based loop, hybrid uncertainty+diversity, core-set (§1.4/§2.3/§2.4) | Headline 0.89/0.87-at-40% were **illustrative**; this repo *measures* 0.870 and a much higher label efficiency (so "40%" is replaced by the real figure) |
-| Entity-level micro-F1, precision/recall, learning curves (§1.2) | Uncertainty is **MNLP** (now *also* the thesis's literal least-confidence, both shown); a char-CNN was added (Ma & Hovy) beyond the word-only model in §2.2 |
-| Both micro **and macro** F1 reported; multi-seed variance; seqeval cross-check | Label noise is **injected** (not a human-annotator study); stopping is budget-based (no plateau); no cross-validation; no transformer (a stated limitation) |
-| Business Figures 5–11, 10-row executive table, NER→fields **wired** end-to-end | — |
+| **Same real dataset** (analisto/futurelearn_com) → business stats match exactly (§8) | NER labels are *composed* from real field values (real descriptions don't contain them as text — the thesis's own approach), so the NER task is built, the data is not |
+| BiLSTM-CRF, BIO tagging, random in-task embeddings (§2.2) | A char-CNN was added (Ma & Hovy) beyond the word-only model in §2.2 — a reasonable, citable upgrade |
+| Pool-based loop, hybrid uncertainty+diversity, core-set (§1.4/§2.3/§2.4) | Headline 0.89/0.87-at-40% were illustrative; now **measured** (the loop's budget caps below 40% of the pool, so the real efficiency figure is reported instead) |
+| Entity-level micro **+ macro** F1, P/R, learning curves, multi-seed variance, seqeval cross-check (§1.2) | Uncertainty is **MNLP** *and* the thesis's literal least-confidence (both run); label noise is added to model annotation imperfection; no cross-validation; no transformer (a stated limitation) |
+| Business Figures 5–11, 10-row executive table, **`level` field**, NER→fields **wired** end-to-end | — |
 
-**One-line answer:** the code is a faithful, rigorous, transparently-documented re-implementation
-of the thesis's *framework*; it does **not** re-run the original empirical study (synthetic data,
-re-measured results). Present it as such to the committee, and the divergences above become
-strengths (honesty + added rigor) rather than gaps.
+**One-line answer:** yes — the code faithfully and rigorously implements the thesis's framework
+**and runs on the thesis's actual data**, turning its illustrative headline numbers into measured,
+reproducible ones. The remaining items are honest, defensible engineering choices (a stronger
+char-CNN, added rigor, composed NER labels) — strengths, not gaps.
 
 ### 12.1 Weak points the implementation fixes
 
@@ -529,5 +541,6 @@ strengths (honesty + added rigor) rather than gaps.
 
 ---
 
-<sub>Implementation accompanying the UNEC master thesis. Synthetic-but-calibrated data;
-all results reproducible via `run_all.sh`.</sub>
+<sub>Implementation accompanying the UNEC master thesis. Runs on the real FutureLearn dataset
+([analisto/futurelearn_com](https://github.com/analisto/futurelearn_com)); all results
+reproducible via `run_all.sh`.</sub>

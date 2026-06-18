@@ -6,7 +6,7 @@ A faithful, reproducible implementation of the master thesis
 
 Components
 ----------
-- data    : calibrated FutureLearn course dataset + gold-labelled BIO NER corpus
+- data    : real FutureLearn course dataset + gold-labelled BIO NER corpus
 - ner     : BiLSTM-CRF sequence labeller (CRF implemented from scratch)
 - al      : pool-based active-learning loop (random / uncertainty / diversity / hybrid)
 - analysis: business-oriented analysis of the extracted entities

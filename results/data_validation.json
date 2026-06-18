@@ -1,175 +1,21 @@
 {
-  "paid_mean_enroll": 55006.0,
-  "free_mean_enroll": 3748.2,
-  "paid_free_ratio": 14.68,
-  "pct_paid": 13.1,
-  "categories": [
-    {
-      "category": "Business & Management",
-      "n": 216,
-      "target_mean": 10981,
-      "got_mean": 9125,
-      "err_pct": -16.9
-    },
-    {
-      "category": "Healthcare & Medicine",
-      "n": 130,
-      "target_mean": 9132,
-      "got_mean": 8813,
-      "err_pct": -3.5
-    },
-    {
-      "category": "IT & Computer Science",
-      "n": 113,
-      "target_mean": 5153,
-      "got_mean": 5347,
-      "err_pct": 3.8
-    },
-    {
-      "category": "Science, Engineering & Maths",
-      "n": 80,
-      "target_mean": 6775,
-      "got_mean": 6640,
-      "err_pct": -2.0
-    },
-    {
-      "category": "Teaching",
-      "n": 60,
-      "target_mean": 8500,
-      "got_mean": 10734,
-      "err_pct": 26.3
-    },
-    {
-      "category": "Psychology & Mental Health",
-      "n": 60,
-      "target_mean": 12500,
-      "got_mean": 11604,
-      "err_pct": -7.2
-    },
-    {
-      "category": "Language",
-      "n": 58,
-      "target_mean": 34673,
-      "got_mean": 32958,
-      "err_pct": -4.9
-    },
-    {
-      "category": "History",
-      "n": 55,
-      "target_mean": 13381,
-      "got_mean": 13128,
-      "err_pct": -1.9
-    },
-    {
-      "category": "Nature & Environment",
-      "n": 45,
-      "target_mean": 7800,
-      "got_mean": 9040,
-      "err_pct": 15.9
-    },
-    {
-      "category": "Creative Arts & Media",
-      "n": 45,
-      "target_mean": 6200,
-      "got_mean": 6886,
-      "err_pct": 11.1
-    },
-    {
-      "category": "Study Skills",
-      "n": 40,
-      "target_mean": 14195,
-      "got_mean": 13504,
-      "err_pct": -4.9
-    },
-    {
-      "category": "Politics & Society",
-      "n": 40,
-      "target_mean": 9500,
-      "got_mean": 9485,
-      "err_pct": -0.2
-    },
-    {
-      "category": "Literature",
-      "n": 30,
-      "target_mean": 8800,
-      "got_mean": 10495,
-      "err_pct": 19.3
-    },
-    {
-      "category": "Law",
-      "n": 28,
-      "target_mean": 7000,
-      "got_mean": 10211,
-      "err_pct": 45.9
-    }
-  ],
-  "duration_mean_enroll": {
-    "1": 1207,
-    "2": 12677,
-    "3": 17033,
-    "4": 14467,
-    "5": 13561,
-    "6": 6524,
-    "7": 4329,
-    "8": 1357,
-    "9": 3860,
-    "10": 1319,
-    "11": 897
-  },
-  "price_mean_enroll": {
-    "19": 58318,
-    "24": 4403,
-    "29": 22695,
-    "39": 61325,
-    "49": 41578,
-    "59": 57049,
-    "69": 69686,
-    "79": 68459,
-    "89": 23636,
-    "99": 20963,
-    "109": 15585,
-    "120": 13434
-  },
-  "named_partners": [
-    {
-      "partner": "University of Leeds",
-      "n": 94,
-      "mean_enroll": 19285,
-      "total_enroll": 1812825
-    },
-    {
-      "partner": "Taipei Medical University",
-      "n": 54,
-      "mean_enroll": 5693,
-      "total_enroll": 307409
-    },
-    {
-      "partner": "University of Reading",
-      "n": 12,
-      "mean_enroll": 13921,
-      "total_enroll": 167056
-    },
-    {
-      "partner": "Vrije Universiteit Amsterdam",
-      "n": 10,
-      "mean_enroll": 20024,
-      "total_enroll": 200245
-    },
-    {
-      "partner": "University of Groningen",
-      "n": 8,
-      "mean_enroll": 79206,
-      "total_enroll": 633652
-    }
-  ],
-  "pct_rating_present": 13.1,
-  "mean_rating": 4.65,
+  "source": "https://github.com/analisto/futurelearn_com",
+  "n_courses": 1000,
+  "n_categories": 14,
+  "n_partners": 114,
+  "paid": 130,
+  "free": 870,
+  "paid_mean_enroll": 46291.2,
+  "free_mean_enroll": 3049.7,
+  "paid_free_ratio": 15.18,
+  "pct_rating_missing": 87.0,
+  "pct_level_present": 63.9,
+  "mean_rating": 4.7,
   "corpus": {
-    "sentences": 3383,
-    "tokens": 62754,
-    "entity_tokens": 25071,
-    "pct_entity_tokens": 40.0,
-    "train_pool": 2706,
-    "test": 677
+    "sentences": 2477,
+    "tokens": 51155,
+    "pct_entity_tokens": 33.5,
+    "train_pool": 1982,
+    "test": 495
   }
 }

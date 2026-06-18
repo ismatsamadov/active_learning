@@ -30,6 +30,11 @@ def _save(fig, name):
     return str(path)
 
 
+def _ri(x):
+    """Round to int, but tolerate NaN (real data has missing enrollment) -> None."""
+    return None if x is None or (isinstance(x, float) and np.isnan(x)) else int(round(x))
+
+
 def fig5_category(df) -> Dict:
     g = df.groupby("category").agg(n=("course_id", "size"),
                                    demand=("enrollment_count", "mean")).reset_index()
@@ -45,7 +50,7 @@ def fig5_category(df) -> Dict:
     ax2.grid(False)
     ax1.set_title("Figure 5. Category Overview: Course Volume vs Learner Demand")
     _save(fig, "fig5_category_volume_vs_demand.png")
-    return {r["category"]: dict(n=int(r["n"]), avg_enroll=round(r["demand"]))
+    return {r["category"]: dict(n=int(r["n"]), avg_enroll=_ri(r["demand"]))
             for _, r in g.iterrows()}
 
 
@@ -66,7 +71,7 @@ def fig6_7_free_paid(df) -> Dict:
     paid = df[df.is_paid].copy()
     paid["revenue"] = paid["price"] * paid["enrollment_count"]
     realised = float(paid["revenue"].sum())
-    med_price = float(df.loc[df.is_paid, "price"].median())
+    med_price = float(df.loc[df.is_paid & (df.price > 0), "price"].median())
     top_free = df.loc[~df.is_paid].nlargest(int(0.1 * (~df.is_paid).sum()), "enrollment_count")
     conversion_opp = float((top_free["enrollment_count"] * med_price).sum())
     fig, ax = plt.subplots(figsize=(8, 6))
@@ -84,7 +89,7 @@ def fig6_7_free_paid(df) -> Dict:
 
 
 def fig8_price(df) -> Dict:
-    paid = df[df.is_paid]
+    paid = df[df.is_paid & (df.price > 0)]   # drop the £0 paid-promo tier
     g = paid.groupby("price").agg(n=("course_id", "size"),
                                   demand=("enrollment_count", "mean")).reset_index()
     fig, ax1 = plt.subplots(figsize=(11, 6))
@@ -95,7 +100,7 @@ def fig8_price(df) -> Dict:
     ax2.set_ylabel("Avg enrollment", color=ACCENT); ax2.grid(False)
     ax1.set_title("Figure 8. Price Point Strategy: Volume & Learner Response")
     _save(fig, "fig8_price_strategy.png")
-    return {int(r["price"]): dict(n=int(r["n"]), avg_enroll=round(r["demand"]))
+    return {int(r["price"]): dict(n=int(r["n"]), avg_enroll=_ri(r["demand"]))
             for _, r in g.iterrows()}
 
 
@@ -109,7 +114,7 @@ def fig9_duration(df) -> Dict:
     ax.set_xlabel("Course duration (weeks)"); ax.set_ylabel("Avg enrollment")
     ax.set_title(f"Figure 9. Optimal Course Length (peak at {peak} weeks)")
     _save(fig, "fig9_duration.png")
-    return {int(k): round(float(v)) for k, v in g.items()}
+    return {int(k): _ri(v) for k, v in g.items()}
 
 
 def fig10_partner(df, top=12) -> Dict:
@@ -127,7 +132,7 @@ def fig10_partner(df, top=12) -> Dict:
     ax.set_ylabel("Per-course efficiency (avg enrollment)")
     ax.set_title("Figure 10. Partner Performance: Total Reach vs Per-Course Efficiency\n(bubble size = catalogue size)")
     _save(fig, "fig10_partner.png")
-    return {r["partner"]: dict(total=int(r["total"]), per_course=round(r["per_course"]),
+    return {r["partner"]: dict(total=_ri(r["total"]), per_course=_ri(r["per_course"]),
                                n=int(r["n"])) for _, r in g.iterrows()}
 
 
@@ -153,32 +158,27 @@ def fig11_opportunity(df) -> Dict:
 def executive_summary(df, stats) -> list:
     """Derive the prioritised 10-row decision table (thesis Table 5, 4 priority
     tiers) entirely from the data — no hard-coded findings."""
-    cat = pd.DataFrame([(k, v["n"], v["avg_enroll"]) for k, v in stats["fig5"].items()],
+    cat = pd.DataFrame([(k, v["n"], v["avg_enroll"]) for k, v in stats["fig5"].items()
+                        if v["avg_enroll"] is not None],
                        columns=["category", "n", "avg_enroll"])
     under = cat.sort_values("avg_enroll", ascending=False).iloc[0]      # highest demand
     over = cat.sort_values("n", ascending=False).iloc[0]                # biggest catalogue
-    # most over-supplied-relative-to-demand category (high n, low demand rank)
-    cat = cat.assign(eff=cat["avg_enroll"] / cat["n"])
     inefficient = cat[cat["n"] >= cat["n"].median()].sort_values("avg_enroll").iloc[0]
-    dur = stats["fig9"]; best_dur = max(dur, key=dur.get)
+    dur = {k: v for k, v in stats["fig9"].items() if v is not None}
+    best_dur = max(dur, key=dur.get)
     miss_rating = round(100 * df.rating.isna().mean(), 1)
 
-    # data-derived pricing: the £59-vs-£39/£79 dip (the thesis's pricing finding),
-    # read from the three well-populated key tiers; robust fallback otherwise.
-    f8 = stats["fig8"]
-    mid, lo, hi = f8.get(59), f8.get(39), f8.get(79)
-    if mid and lo and hi and mid["avg_enroll"] < lo["avg_enroll"] and mid["avg_enroll"] < hi["avg_enroll"]:
-        price_finding = (f"The £59 mid-tier underperforms (~{mid['avg_enroll']:,}/course) "
-                         f"vs £39 (~{lo['avg_enroll']:,}) and £79 (~{hi['avg_enroll']:,})")
-    else:
-        common = {p: d for p, d in f8.items() if d["n"] >= 5}
-        w = min(common, key=lambda p: common[p]["avg_enroll"])
-        b = max(common, key=lambda p: common[p]["avg_enroll"])
-        price_finding = (f"The £{w} tier underperforms (~{common[w]['avg_enroll']:,}/course) "
-                         f"vs the £{b} tier (~{common[b]['avg_enroll']:,})")
-    # top efficiency partner (Fig 10)
-    top_partner = max(stats["fig10"].items(), key=lambda kv: kv[1]["per_course"])
-    # high-performing courses (top decile of enrollment)
+    # data-derived pricing finding from the well-populated tiers (n>=5): report the
+    # real lowest-vs-highest pattern (the real data does NOT show the thesis's claimed
+    # £59 dip — its prose misread its own figure, which this surfaces honestly).
+    common = {p: d for p, d in stats["fig8"].items() if d["n"] >= 5 and d["avg_enroll"] is not None}
+    w = min(common, key=lambda p: common[p]["avg_enroll"])
+    b = max(common, key=lambda p: common[p]["avg_enroll"])
+    price_finding = (f"The £{w} price tier underperforms (~{common[w]['avg_enroll']:,}/course) "
+                     f"vs the £{b} tier (~{common[b]['avg_enroll']:,})")
+    # top efficiency partner (Fig 10), ignoring partners with unknown enrollment
+    parts = {k: v for k, v in stats["fig10"].items() if v["per_course"] is not None}
+    top_partner = max(parts.items(), key=lambda kv: kv[1]["per_course"])
     top_cut = int(df["enrollment_count"].quantile(0.9))
 
     rows = [

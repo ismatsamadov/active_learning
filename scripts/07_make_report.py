@@ -116,7 +116,8 @@ def main():
         fp = biz["fig6_7"]
         w(f"- Paid courses average **{fp['paid_mean']:,}** enrolments vs **{fp['free_mean']:,}** "
           f"for free — a **{fp['ratio']}×** gap.")
-        dur = biz["fig9"]; peak = max(dur, key=dur.get)
+        dur = {k: v for k, v in biz["fig9"].items() if v is not None}
+        peak = max(dur, key=dur.get)
         w(f"- Engagement peaks at **{peak}-week** courses ({dur[peak]:,} avg); "
           f"1-week and 8+-week courses are far lower (2–5 week window).")
         w(f"- Star categories (high demand + high satisfaction): {', '.join(biz['fig11']['stars'])}.")

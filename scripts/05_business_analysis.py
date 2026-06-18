@@ -29,7 +29,8 @@ def main():
     print("Business analysis written. Figures in", FIGURES_DIR)
     print(f"  free vs paid: {stats['fig6_7']['free_mean']:,} vs "
           f"{stats['fig6_7']['paid_mean']:,} ({stats['fig6_7']['ratio']}x)")
-    print(f"  duration peak: {max(stats['fig9'], key=stats['fig9'].get)} weeks")
+    _dur = {k: v for k, v in stats['fig9'].items() if v is not None}
+    print(f"  duration peak: {max(_dur, key=_dur.get)} weeks")
     print(f"  star categories (Fig 11): {stats['fig11']['stars']}")
     print("  executive summary:")
     for r in stats["executive_summary"]:
