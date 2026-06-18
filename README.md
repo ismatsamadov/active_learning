@@ -286,9 +286,9 @@ the curve is attributable purely to the query strategy — a fair, controlled co
 | Strategy | Idea | Reference |
 | --- | --- | --- |
 | `random` | uniform control (the thesis omitted this) | — |
-| `least_confidence` | label where `1 − P(best path)` is highest — the thesis §2.3 wording literally | Lewis & Gale 1994 |
-| `uncertainty` | length-normalised log-prob of the best path (MNLP) | Shen et al. 2018 |
-| `hybrid` | most-uncertain candidates → core-set for diversity | Lewis & Gale 1994 · Sener & Savarese 2018 |
+| `least_confidence` | label where `1 − P(best path)` is highest — the thesis §2.3 wording literally | [Lewis & Gale 1994](https://arxiv.org/abs/cmp-lg/9407020) |
+| `uncertainty` | length-normalised log-prob of the best path (MNLP) | [Shen et al. 2018](https://arxiv.org/abs/1707.05928) |
+| `hybrid` | most-uncertain candidates → core-set for diversity | [Lewis & Gale 1994](https://arxiv.org/abs/cmp-lg/9407020) · [Sener & Savarese 2018](https://arxiv.org/abs/1708.00489) |
 
 ---
 
@@ -532,14 +532,22 @@ char-CNN, added rigor, composed NER labels) — strengths, not gaps.
 
 ## 13. References
 
-- Lample et al. (2016) — *Neural Architectures for NER* (BiLSTM-CRF).
-- Ma & Hovy (2016) — *End-to-end Sequence Labeling via BiLSTM-CNNs-CRF* (char-CNN).
-- Lafferty et al. (2001) — *Conditional Random Fields*.
-- Lewis & Gale (1994) — uncertainty sampling.
-- Sener & Savarese (2018) — *core-set* diversity.
-- Shen et al. (2018) — *Deep Active Learning for NER* (MNLP).
-- Settles (2012) — *Active Learning*.
-- Tjong Kim Sang & De Meulder (2003) — CoNLL-2003 entity-level evaluation.
+Every reference below is also cited in the thesis (matching its reference list) **except
+Ma & Hovy (2016)**, which we add for the character-CNN. Links verified to resolve to the
+exact paper; each note says where the code uses it.
+
+| Reference | Used for |
+| --- | --- |
+| [Lample, Ballesteros, Subramanian, Kawakami & Dyer (2016). *Neural Architectures for Named Entity Recognition.* NAACL-HLT.](https://aclanthology.org/N16-1030/) | the BiLSTM-CRF baseline ([`model.py`](alner/ner/model.py)) |
+| [Hochreiter & Schmidhuber (1997). *Long Short-Term Memory.* Neural Computation 9(8).](https://doi.org/10.1162/neco.1997.9.8.1735) | the LSTM cell |
+| [Graves & Schmidhuber (2005). *Framewise phoneme classification with bidirectional LSTM…* Neural Networks 18(5–6).](https://doi.org/10.1016/j.neunet.2005.06.042) | bidirectional encoding |
+| [Lafferty, McCallum & Pereira (2001). *Conditional Random Fields…* ICML.](https://dblp.org/rec/conf/icml/LaffertyMP01.html) | the CRF layer ([`crf.py`](alner/ner/crf.py)) |
+| [Ma & Hovy (2016). *End-to-end Sequence Labeling via Bi-directional LSTM-CNNs-CRF.* ACL.](https://aclanthology.org/P16-1101/) | the character-CNN — **our addition, not in the thesis** |
+| [Lewis & Gale (1994). *A Sequential Algorithm for Training Text Classifiers.* SIGIR.](https://arxiv.org/abs/cmp-lg/9407020) | uncertainty / least-confidence sampling ([`strategies.py`](alner/al/strategies.py)) |
+| [Sener & Savarese (2018). *Active Learning for CNNs: A Core-Set Approach.* ICLR.](https://arxiv.org/abs/1708.00489) | diversity (core-set) selection |
+| [Shen, Yun, Lipton, Kronrod & Anandkumar (2018). *Deep Active Learning for Named Entity Recognition.* ICLR.](https://arxiv.org/abs/1707.05928) | MNLP sequence-level uncertainty |
+| [Settles (2012). *Active Learning.* Synthesis Lectures / Morgan & Claypool.](https://doi.org/10.2200/S00429ED1V01Y201207AIM018) | the pool-based AL framework ([`loop.py`](alner/al/loop.py)) |
+| [Tjong Kim Sang & De Meulder (2003). *Introduction to the CoNLL-2003 Shared Task…* CoNLL.](https://aclanthology.org/W03-0419/) | entity-level F1 evaluation ([`metrics.py`](alner/ner/metrics.py)) |
 
 ---
 
