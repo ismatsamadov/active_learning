@@ -161,7 +161,7 @@ def _field_sentence(row, rng) -> Tagged:
     return s
 
 
-def _desc_sentence(row, max_tokens: int = 40) -> Tagged:
+def _desc_sentence(row, max_tokens: int = 24) -> Tagged:
     """Real description text as O-context (the realism: model reads real prose)."""
     toks = _TOKEN_RE.findall(str(row.description))[:max_tokens]
     return [(t, "O") for t in toks] if toks else []

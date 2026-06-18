@@ -21,21 +21,22 @@ class TrainConfig:
     lr: float = 1e-3
     weight_decay: float = 1e-5
     batch_size: int = 32
-    max_epochs: int = 60
-    patience: int = 10           # early-stopping on dev entity-F1
+    max_epochs: int = 40
+    patience: int = 8            # early-stopping on dev entity-F1
     grad_clip: float = 5.0
-    min_epochs: int = 15         # warmup past the all-O basin before stopping
+    min_epochs: int = 10         # warmup past the all-O basin before stopping
 
 
 @dataclass
 class ALConfig:
     seed_size: int = 120         # initial labelled sentences (reliably escapes all-O)
     query_size: int = 40         # sentences annotated per AL iteration
-    n_iterations: int = 13       # -> labelled budget 120,160,...,640
+    n_iterations: int = 12       # -> labelled budget 120,160,...,600
     uncertainty_pool_factor: int = 4   # hybrid: take top (factor*query_size) uncertain, then diversify
+    score_pool_cap: int = 800    # subsample the unlabeled pool when scoring (standard AL speedup)
     # least_confidence = thesis sec 2.3 literal wording; uncertainty = MNLP (Shen 2018)
     strategies: List[str] = field(default_factory=lambda: ["random", "least_confidence", "uncertainty", "hybrid"])
-    seeds: List[int] = field(default_factory=lambda: [13, 29, 42])
+    seeds: List[int] = field(default_factory=lambda: [13, 29])
 
 
 @dataclass

@@ -1,0 +1,229 @@
+{
+  "fig5": {
+    "Language": {
+      "n": 58,
+      "avg_enroll": 34673
+    },
+    "Study Skills": {
+      "n": 38,
+      "avg_enroll": 14195
+    },
+    "History": {
+      "n": 36,
+      "avg_enroll": 13381
+    },
+    "Business & Management": {
+      "n": 216,
+      "avg_enroll": 10982
+    },
+    "Psychology & Mental Health": {
+      "n": 28,
+      "avg_enroll": 10851
+    },
+    "Healthcare & Medicine": {
+      "n": 194,
+      "avg_enroll": 9132
+    },
+    "Law": {
+      "n": 12,
+      "avg_enroll": 7787
+    },
+    "Science, Engineering & Maths": {
+      "n": 67,
+      "avg_enroll": 6775
+    },
+    "Creative Arts & Media": {
+      "n": 63,
+      "avg_enroll": 5180
+    },
+    "IT & Computer Science": {
+      "n": 113,
+      "avg_enroll": 5153
+    },
+    "Teaching": {
+      "n": 43,
+      "avg_enroll": 5068
+    },
+    "Politics & Society": {
+      "n": 44,
+      "avg_enroll": 4761
+    },
+    "Literature": {
+      "n": 4,
+      "avg_enroll": 4428
+    },
+    "Nature & Environment": {
+      "n": 84,
+      "avg_enroll": 3967
+    }
+  },
+  "fig6_7": {
+    "free_mean": 3050,
+    "paid_mean": 46291,
+    "ratio": 15.18,
+    "realised_revenue": 231788030,
+    "conversion_opportunity": 44058066
+  },
+  "fig8": {
+    "39": {
+      "n": 55,
+      "avg_enroll": 47245
+    },
+    "59": {
+      "n": 15,
+      "avg_enroll": 64821
+    },
+    "79": {
+      "n": 25,
+      "avg_enroll": 35891
+    },
+    "85": {
+      "n": 1,
+      "avg_enroll": null
+    },
+    "99": {
+      "n": 2,
+      "avg_enroll": 11096
+    },
+    "120": {
+      "n": 1,
+      "avg_enroll": null
+    }
+  },
+  "fig9": {
+    "1": 1565,
+    "2": 13701,
+    "3": 6980,
+    "4": 7659,
+    "5": 15344,
+    "6": 5558,
+    "7": 6194,
+    "8": 1030,
+    "10": null,
+    "11": null
+  },
+  "fig10": {
+    "University of Leeds": {
+      "total": 2268709,
+      "per_course": 24135,
+      "n": 100
+    },
+    "University of Reading": {
+      "total": 768809,
+      "per_course": 51254,
+      "n": 21
+    },
+    "University of Groningen": {
+      "total": 321740,
+      "per_course": 80435,
+      "n": 6
+    },
+    "Taipei Medical University": {
+      "total": 222316,
+      "per_course": 4117,
+      "n": 60
+    },
+    "UEA (University of East Anglia)": {
+      "total": 220091,
+      "per_course": 15721,
+      "n": 14
+    },
+    "Deakin University": {
+      "total": 207814,
+      "per_course": 11545,
+      "n": 35
+    },
+    "Coventry University": {
+      "total": 161385,
+      "per_course": 12414,
+      "n": 14
+    },
+    "Vrije Universiteit Amsterdam": {
+      "total": 137497,
+      "per_course": 68748,
+      "n": 2
+    },
+    "University of Strathclyde": {
+      "total": 129160,
+      "per_course": 32290,
+      "n": 4
+    },
+    "University of Oslo": {
+      "total": 122940,
+      "per_course": 30735,
+      "n": 4
+    },
+    "CIPD - Chartered Institute of Personnel and Development": {
+      "total": 121693,
+      "per_course": 121693,
+      "n": 1
+    },
+    "The University of Glasgow": {
+      "total": 119461,
+      "per_course": 6637,
+      "n": 19
+    }
+  },
+  "fig11": {
+    "stars": [
+      "Healthcare & Medicine",
+      "History",
+      "Language",
+      "Psychology & Mental Health"
+    ],
+    "demand_median": 7281,
+    "satisfaction_median": 4.68
+  },
+  "executive_summary": [
+    {
+      "priority": "🔴 Critical",
+      "finding": "Language shows the highest demand (~34,673/course) on only 58 courses",
+      "action": "Commission more Language courses with high-performing partners"
+    },
+    {
+      "priority": "🔴 Critical",
+      "finding": "Paid courses average 15.18x the enrollment of free courses",
+      "action": "Evaluate converting top-performing free courses into paid offerings"
+    },
+    {
+      "priority": "🔴 Critical",
+      "finding": "~87.0% of courses lack learner ratings",
+      "action": "Implement a systematic learner feedback/review mechanism"
+    },
+    {
+      "priority": "🟠 High",
+      "finding": "CIPD - Chartered Institute of Personnel and Development is the most efficient partner (~121,693/course)",
+      "action": "Expand collaboration with high-efficiency partners"
+    },
+    {
+      "priority": "🟠 High",
+      "finding": "The £79 price tier underperforms (~35,891/course) vs the £59 tier (~64,821)",
+      "action": "Reposition mid-tier pricing toward clearer value tiers"
+    },
+    {
+      "priority": "🟠 High",
+      "finding": "5-week courses achieve the highest engagement (~15,344)",
+      "action": "Prioritise course designs in the 2-5 week range"
+    },
+    {
+      "priority": "🟡 Medium",
+      "finding": "Advanced content is priced similarly to introductory content",
+      "action": "Introduce differentiated pricing for advanced-level courses (£79-£99)"
+    },
+    {
+      "priority": "🟡 Medium",
+      "finding": "Nature & Environment has high supply (84 courses) but modest demand (~3,967)",
+      "action": "Review content focus; refocus on high-demand subdomains"
+    },
+    {
+      "priority": "🟡 Medium",
+      "finding": "Business & Management is the largest catalogue (216 courses)",
+      "action": "Quality/relevance assessment before further expansion"
+    },
+    {
+      "priority": "🟢 Ongoing",
+      "finding": "A small set of courses drive disproportionate enrollment (top-decile >22,995)",
+      "action": "Maintain and extend high-performing courses with updates/advanced modules"
+    }
+  ]
+}

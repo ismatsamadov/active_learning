@@ -59,6 +59,10 @@ def run_active_learning(pool: List[dict], test: List[dict], vocab: Vocab, cfg,
         pool_local = np.where(~labeled_mask)[0]
         if len(pool_local) == 0:
             break
+        # subsample the pool for scoring (standard AL speedup; random sees full pool)
+        cap = getattr(al, "score_pool_cap", 0)
+        if strategy != "random" and cap and len(pool_local) > cap:
+            pool_local = rng.choice(pool_local, size=cap, replace=False)
         pool_records = [pool[i] for i in pool_local]
         labeled_emb = None
         if strategy == "hybrid":

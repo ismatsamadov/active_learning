@@ -1,0 +1,149 @@
+{
+  "field_recovery": {
+    "partner": 0.6115,
+    "category": 0.6115,
+    "price": 0.6091,
+    "duration_weeks": 0.6115,
+    "enrollment_count": 0.6113,
+    "level": 0.6331
+  },
+  "n_courses": 417,
+  "examples": [
+    {
+      "course_id": 372,
+      "text": "Join this 2-week leadership & enterprise course from Starweaver at free .",
+      "extracted": {
+        "partner": "Starweaver",
+        "category": "Business & Management",
+        "price": 0.0,
+        "duration_weeks": 2,
+        "enrollment_count": null,
+        "level": null
+      },
+      "truth": {
+        "partner": "Starweaver",
+        "category": "Business & Management",
+        "price": 0.0,
+        "duration_weeks": 2,
+        "enrollment_count": null,
+        "level": null
+      }
+    },
+    {
+      "course_id": 756,
+      "text": "Discover the genres and sounds of Korean traditional music to understand the role music plays in Korean culture and history .",
+      "extracted": {
+        "partner": null,
+        "category": null,
+        "price": null,
+        "duration_weeks": null,
+        "enrollment_count": null,
+        "level": null
+      },
+      "truth": {
+        "partner": "Hanyang University",
+        "category": "Creative Arts & Media",
+        "price": 0.0,
+        "duration_weeks": 6,
+        "enrollment_count": 580.0,
+        "level": null
+      }
+    },
+    {
+      "course_id": 24,
+      "text": "University of Leeds presents a modern languages course at Introductory level , running for 2-week , priced at GBP 39 , and has attracted 23,575 students .",
+      "extracted": {
+        "partner": "University of Leeds",
+        "category": "Language",
+        "price": 39.0,
+        "duration_weeks": 2,
+        "enrollment_count": 23575,
+        "level": "Introductory level"
+      },
+      "truth": {
+        "partner": "University of Leeds",
+        "category": "Language",
+        "price": 39.0,
+        "duration_weeks": 2,
+        "enrollment_count": 23575.0,
+        "level": "Introductory level"
+      }
+    },
+    {
+      "course_id": 475,
+      "text": "Get an inside look at Islamic finance with INCEIF , exploring preferred shares , Shariah compliance , and their wider implications .",
+      "extracted": {
+        "partner": null,
+        "category": null,
+        "price": null,
+        "duration_weeks": null,
+        "enrollment_count": null,
+        "level": null
+      },
+      "truth": {
+        "partner": "INCEIF",
+        "category": "Business & Management",
+        "price": 0.0,
+        "duration_weeks": 4,
+        "enrollment_count": null,
+        "level": "Introductory level"
+      }
+    },
+    {
+      "course_id": 826,
+      "text": "Explore the impact of climate change , with a specific focus on the risks and challenges faced in Malawi .",
+      "extracted": {
+        "partner": "The University of Edinburgh",
+        "category": "Nature & Environment",
+        "price": 0.0,
+        "duration_weeks": 5,
+        "enrollment_count": 390,
+        "level": "Introductory level"
+      },
+      "truth": {
+        "partner": "The University of Edinburgh",
+        "category": "Nature & Environment",
+        "price": 0.0,
+        "duration_weeks": 5,
+        "enrollment_count": 390.0,
+        "level": "Introductory level"
+      }
+    },
+    {
+      "course_id": 252,
+      "text": "Explora los desafíos que plantean los residuos electrónicos y descubre las oportunidades del reciclaje sostenible .",
+      "extracted": {
+        "partner": null,
+        "category": null,
+        "price": null,
+        "duration_weeks": null,
+        "enrollment_count": null,
+        "level": null
+      },
+      "truth": {
+        "partner": "EIT RawMaterials",
+        "category": "Nature & Environment",
+        "price": 0.0,
+        "duration_weeks": 2,
+        "enrollment_count": null,
+        "level": null
+      }
+    }
+  ],
+  "test_entity_f1": 0.8617300131061599,
+  "integration": {
+    "free_paid_ratio": {
+      "from_ner": 15.18,
+      "from_truth": 15.18
+    },
+    "top_demand_category": {
+      "from_ner": "Language",
+      "from_truth": "Language"
+    },
+    "duration_peak_weeks": {
+      "from_ner": 5,
+      "from_truth": 5
+    },
+    "n_courses_reconstructed": 999
+  }
+}
