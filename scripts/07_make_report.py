@@ -94,10 +94,12 @@ def main():
 
     # ---- bridge ----
     if bridge:
-        w("## 3. NER → business-data bridge (does NER actually produce the fields?)\n")
-        w(f"The trained model is run over the test descriptions; predicted entities "
-          f"are parsed back into course fields and compared to ground truth "
-          f"(test entity-F1 = {bridge.get('test_entity_f1', float('nan')):.3f}).\n")
+        w("## 3. NER → business-data bridge (is the pipeline wired end-to-end?)\n")
+        w(f"The trained model is run over the test records (entities live in the composed "
+          f"field-sentences; descriptions are non-entity context); predicted entities are "
+          f"parsed back into course fields and compared to ground truth "
+          f"(test entity-F1 = {bridge.get('test_entity_f1', float('nan')):.3f}). This shows the "
+          f"pipeline is wired end-to-end — not extraction from free prose (see README §11).\n")
         w("| Field | Recovery accuracy |")
         w("| --- | --- |")
         for f, v in bridge["field_recovery"].items():

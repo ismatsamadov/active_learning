@@ -1,6 +1,6 @@
 {
   "field_recovery": {
-    "partner": 0.99,
+    "partner": 1.0,
     "category": 1.0,
     "price": 1.0,
     "duration_weeks": 1.0,
@@ -130,7 +130,7 @@
       }
     }
   ],
-  "test_entity_f1": 0.9986842105263158,
+  "test_entity_f1": 1.0,
   "integration": {
     "free_paid_ratio": {
       "from_ner": 15.18,
