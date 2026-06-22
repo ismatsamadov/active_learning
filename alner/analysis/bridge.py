@@ -1,10 +1,17 @@
 """NER -> business-data bridge: parse the model's predicted entities back into
 structured fields and measure how well they recover the ground-truth course data.
 
-This is the worked "extraction -> insight" trace the thesis was missing: it shows
-the NER layer genuinely PRODUCES the institution/category/price/duration/enrollment
-that the business analysis consumes, rather than the analysis coming straight from
-pre-existing columns.
+This is the worked "extraction -> insight" trace the thesis was missing: the NER
+layer parses the institution/category/price/duration/enrollment back out of the
+text the business analysis is built from.
+
+Scope/honesty caveat: the entities the model reads live in the *composed
+field-sentences* (built from the real column values); the free-text descriptions
+are O-context only. So this demonstrates that structured fields survive the
+text->BIO->fields round trip, NOT extraction of fields from real marketing prose.
+The recovery numbers are bounded by the train-time label noise, and "from NER ==
+from truth" on the headline business numbers shows the pipeline is wired
+end-to-end, not that the model discovers fields absent from its training text.
 """
 from __future__ import annotations
 
@@ -32,7 +39,11 @@ def spans_from_bio(tokens: List[str], tags: List[str]):
         if tag.startswith("B-"):
             cur_type, cur_toks = tag[2:], [tok]
         elif tag.startswith("I-") and cur_type:
-            cur_toks.append(tok)
+            if tag[2:] == cur_type:
+                cur_toks.append(tok)
+            else:                       # I- of a different type: flush, start new span
+                out.append((cur_type, " ".join(cur_toks)))
+                cur_type, cur_toks = tag[2:], [tok]
     return out
 
 
@@ -91,8 +102,9 @@ def reconstruct_courses_from_ner(records: List[dict], pred_tags: List[List[str]]
     """Build a course table PURELY from NER predictions: text -> entities -> fields.
 
     One row per course_id, aggregating predicted entities across the course's
-    sentences. ``is_paid`` is inferred from the extracted price. This is the wired
-    end-to-end flow (not adjacency): the business analysis can then run on THIS table.
+    composed field-sentences (the descriptions carry no entities). ``is_paid`` is
+    inferred from the extracted price. This is the wired end-to-end flow (not
+    adjacency): the business analysis can then run on THIS table.
     """
     import pandas as pd
     preds = {id(r): p for r, p in zip(records, pred_tags)}

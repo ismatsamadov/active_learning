@@ -3,6 +3,10 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# Pin hash randomisation for the child interpreters (must be set before they start;
+# setting it inside Python is too late). Makes set-iteration order reproducible.
+export PYTHONHASHSEED=0
+
 PY=".venv/bin/python"
 [ -x "$PY" ] || PY="python3"
 FAST="${1:-}"

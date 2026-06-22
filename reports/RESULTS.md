@@ -4,31 +4,30 @@ _Auto-generated from the implementation in this repository. These numbers replac
 
 ## Headline
 
-- **Hybrid active learning reaches the full-data baseline (F1 = 0.861) using only 200 labelled sentences — 10.1% of the 1982-sentence pool.**
-- Random sampling reaches the same bar at 440 labels (22.2% of pool).
+- Random sampling does **not** reach within 0.01 F1 of the baseline within the budget (final F1 = 0.8679).
 
 ## 1. Full-data supervised baseline (BiLSTM-CRF)
 
-Trained on all 1982 pool sentences, evaluated on 495 held-out test sentences, averaged over seeds [13, 29].
+Trained on all 1985 pool sentences, evaluated on 492 held-out test sentences, averaged over seeds [13].
 
 | Metric | Value |
 | --- | --- |
-| Entity-level F1 (micro) | **0.8615 ± 0.0003** |
-| Entity-level F1 (macro) | 0.8648 |
-| Precision | 0.8889 |
-| Recall | 0.8358 |
-| seqeval F1 (independent check) | 0.8612 |
+| Entity-level F1 (micro) | **0.9961 ± 0.0000** |
+| Entity-level F1 (macro) | 0.9966 |
+| Precision | 0.9948 |
+| Recall | 0.9974 |
+| seqeval F1 (independent check) | 0.9961 |
 
 **Per-entity-type F1:**
 
 | Type | F1 |
 | --- | --- |
-| CAT | 0.845 |
-| DUR | 0.927 |
-| ENROLL | 0.885 |
-| LEVEL | 0.890 |
-| ORG | 0.787 |
-| PRICE | 0.854 |
+| CAT | 1.000 |
+| DUR | 0.998 |
+| ENROLL | 1.000 |
+| LEVEL | 1.000 |
+| ORG | 0.981 |
+| PRICE | 1.000 |
 
 ## 2. Active-learning learning curve
 
@@ -36,41 +35,33 @@ Test entity-F1 (mean ± std over seeds) at each annotation budget.
 
 | Labels | random | least_confidence | uncertainty | hybrid |
 |  --- | --- | --- | --- | --- |
-| 120 | 0.792 ± 0.018 | 0.792 ± 0.018 | 0.792 ± 0.018 | 0.792 ± 0.018 |
-| 160 | 0.831 ± 0.011 | 0.846 ± 0.007 | 0.846 ± 0.001 | 0.844 ± 0.001 |
-| 200 | 0.827 ± 0.001 | 0.856 ± 0.001 | 0.855 ± 0.002 | 0.854 ± 0.002 |
-| 240 | 0.833 ± 0.005 | 0.855 ± 0.001 | 0.859 ± 0.001 | 0.853 ± 0.001 |
-| 280 | 0.849 ± 0.000 | 0.858 ± 0.003 | 0.860 ± 0.002 | 0.856 ± 0.001 |
-| 320 | 0.846 ± 0.001 | 0.860 ± 0.001 | 0.861 ± 0.002 | 0.857 ± 0.000 |
-| 360 | 0.850 ± 0.005 | 0.861 ± 0.001 | 0.860 ± 0.001 | 0.855 ± 0.001 |
-| 400 | 0.850 ± 0.001 | 0.861 ± 0.001 | 0.861 ± 0.000 | 0.857 ± 0.000 |
-| 440 | 0.857 ± 0.000 | 0.861 ± 0.001 | 0.862 ± 0.000 | 0.858 ± 0.000 |
-| 480 | 0.853 ± 0.001 | 0.861 ± 0.000 | 0.862 ± 0.000 | 0.859 ± 0.001 |
-| 520 | 0.854 ± 0.002 | 0.862 ± 0.000 | 0.862 ± 0.001 | 0.858 ± 0.000 |
-| 560 | 0.856 ± 0.001 | 0.862 ± 0.000 | 0.862 ± 0.001 | 0.859 ± 0.000 |
-| 600 | 0.858 ± 0.002 | 0.862 ± 0.000 | 0.862 ± 0.001 | 0.860 ± 0.001 |
+| 80 | 0.063 ± 0.000 | 0.063 ± 0.000 | 0.063 ± 0.000 | 0.063 ± 0.000 |
+| 200 | 0.000 ± 0.000 | 0.000 ± 0.000 | 0.000 ± 0.000 | 0.000 ± 0.000 |
+| 320 | 0.000 ± 0.000 | 0.000 ± 0.000 | 0.000 ± 0.000 | 0.000 ± 0.000 |
+| 440 | 0.785 ± 0.000 | 0.778 ± 0.000 | 0.814 ± 0.000 | 0.759 ± 0.000 |
+| 560 | 0.868 ± 0.000 | 0.942 ± 0.000 | 0.880 ± 0.000 | 0.895 ± 0.000 |
 
 ![learning curve](../figures/learning_curve.png)
 
 ## 3. NER → business-data bridge (does NER actually produce the fields?)
 
-The trained model is run over the test descriptions; predicted entities are parsed back into course fields and compared to ground truth (test entity-F1 = 0.862).
+The trained model is run over the test descriptions; predicted entities are parsed back into course fields and compared to ground truth (test entity-F1 = 0.999).
 
 | Field | Recovery accuracy |
 | --- | --- |
-| partner | 0.612 |
-| category | 0.612 |
-| price | 0.609 |
-| duration_weeks | 0.612 |
-| enrollment_count | 0.611 |
-| level | 0.633 |
+| partner | 0.990 |
+| category | 1.000 |
+| price | 1.000 |
+| duration_weeks | 1.000 |
+| enrollment_count | 1.000 |
+| level | 1.000 |
 
 **Worked example:**
 
-> Join this 2-week leadership & enterprise course from Starweaver at free .
+> Develop tools for assessing , managing , and treating pain to help ease distress for palliative care patients .
 
-- extracted: `{'partner': 'Starweaver', 'category': 'Business & Management', 'price': 0.0, 'duration_weeks': 2, 'enrollment_count': None, 'level': None}`
-- truth: `{'partner': 'Starweaver', 'category': 'Business & Management', 'price': 0.0, 'duration_weeks': 2, 'enrollment_count': None, 'level': None}`
+- extracted: `{'partner': 'University of Colorado', 'category': 'Healthcare & Medicine', 'price': 0.0, 'duration_weeks': 5, 'enrollment_count': 321, 'level': None}`
+- truth: `{'partner': 'University of Colorado', 'category': 'Healthcare & Medicine', 'price': 0.0, 'duration_weeks': 5, 'enrollment_count': 321.0, 'level': None}`
 
 ## 4. Business-oriented analysis (Figures 5–11)
 

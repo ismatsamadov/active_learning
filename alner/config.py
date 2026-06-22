@@ -33,10 +33,11 @@ class ALConfig:
     query_size: int = 40         # sentences annotated per AL iteration
     n_iterations: int = 12       # -> labelled budget 120,160,...,600
     uncertainty_pool_factor: int = 4   # hybrid: take top (factor*query_size) uncertain, then diversify
-    score_pool_cap: int = 800    # subsample the unlabeled pool when scoring (standard AL speedup)
+    score_pool_cap: int = 0      # 0 = score the FULL pool (no subsampling); if >0 it is
+                                 # applied identically to every strategy incl. random
     # least_confidence = thesis sec 2.3 literal wording; uncertainty = MNLP (Shen 2018)
     strategies: List[str] = field(default_factory=lambda: ["random", "least_confidence", "uncertainty", "hybrid"])
-    seeds: List[int] = field(default_factory=lambda: [13, 29])
+    seeds: List[int] = field(default_factory=lambda: [13, 29, 47, 61, 79])  # >=5 for usable error bars
 
 
 @dataclass

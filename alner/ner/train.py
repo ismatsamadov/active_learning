@@ -37,7 +37,8 @@ def evaluate(model: BiLSTMCRF, records: List[dict], vocab: Vocab, device: str,
             n = lengths[k]
             rec = records[idxs[k]]
             pred.append([vocab.id2tag[t] for t in path[:n]])
-            # score against the human-annotated labels (standard NER practice)
+            # rec["tags"] is the gold used for scoring; the test split carries clean
+            # gold (noise is injected into the train pool only, see generate.py).
             gold.append(rec["tags"][:n])
     out = prf(gold, pred)
     if by_type:

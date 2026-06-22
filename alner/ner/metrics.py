@@ -71,9 +71,14 @@ def prf_by_type(gold: List[List[str]], pred: List[List[str]]) -> Dict[str, Dict[
 
 def macro_f1(gold: List[List[str]], pred: List[List[str]]) -> float:
     """Macro-averaged F1: per-type F1 averaged with equal weight (gives rare entity
-    types equal say — the complement to micro, as the thesis contrasts (sec 1.2)."""
+    types equal say — the complement to micro, as the thesis contrasts (sec 1.2)).
+
+    Uses a FIXED denominator over the canonical ENTITY_TYPES, so a type that is never
+    predicted nor present counts as F1=0 rather than being dropped from the average
+    (dropping it would silently inflate macro-F1)."""
+    from .. import ENTITY_TYPES
     bt = prf_by_type(gold, pred)
-    return sum(d["f1"] for d in bt.values()) / len(bt) if bt else 0.0
+    return sum(bt.get(t, {}).get("f1", 0.0) for t in ENTITY_TYPES) / len(ENTITY_TYPES)
 
 
 def crosscheck_with_seqeval(gold, pred) -> Dict[str, float]:

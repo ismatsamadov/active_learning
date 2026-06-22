@@ -51,11 +51,18 @@ def main():
 
     agg = aggregate(runs)
 
-    # baseline (from script 03 if available, else final full-pool point is not it —
-    # use the saved baseline)
+    # baseline reference line: the full-data F1 from script 03. If baseline.json is
+    # missing we fall back to the best AL point, but that is a WEAKER, self-referential
+    # bar (label-efficiency would compare AL to itself) — warn loudly so it isn't taken
+    # as the true full-supervision baseline. Run scripts/03_run_baseline.py first.
     bpath = RESULTS_DIR / "baseline.json"
-    baseline = read_json(bpath)["f1_mean"] if bpath.exists() else max(
-        max(s["mean"]) for s in agg.values())
+    if bpath.exists():
+        baseline = read_json(bpath)["f1_mean"]
+    else:
+        baseline = max(max(s["mean"]) for s in agg.values())
+        print(f"!! WARNING: {bpath} not found — using max AL curve F1 ({baseline:.4f}) as the "
+              f"baseline. This is NOT the full-data baseline; label-efficiency is unreliable. "
+              f"Run scripts/03_run_baseline.py first.")
 
     fig = plot_learning_curves(agg, baseline)
     eff = label_efficiency(agg, baseline, tol=0.01)

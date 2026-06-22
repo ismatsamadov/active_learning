@@ -53,6 +53,15 @@ def main():
               f"R={m['recall']:.4f}  ({time.time()-t0:.0f}s, ep{info['best_epoch']})")
 
     xcheck = crosscheck_with_seqeval(last["_gold"], last["_pred"])
+    # The README advertises seqeval as an independent cross-check — enforce it in code
+    # rather than in prose. If seqeval is installed, our entity-F1 must match it; if it
+    # is absent, warn loudly so the advertised check doesn't silently disappear.
+    if "f1" in xcheck:
+        assert abs(xcheck["f1"] - last["f1"]) < 1e-4, (
+            f"in-house F1 {last['f1']:.6f} disagrees with seqeval {xcheck['f1']:.6f}")
+    else:
+        print(f"!! WARNING: seqeval cross-check unavailable ({xcheck.get('error')}) — "
+              f"install seqeval to verify the entity-F1 independently.")
     result = dict(
         n_pool=len(pool), n_test=len(test), seeds=cfg.al.seeds,
         f1_mean=float(np.mean(f1s)), f1_std=float(np.std(f1s)),

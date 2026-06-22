@@ -23,10 +23,14 @@ for _d in (DATA_DIR, RESULTS_DIR, FIGURES_DIR, REPORTS_DIR):
 
 
 def set_seed(seed: int) -> None:
-    """Seed every RNG we touch so a run is bit-for-bit reproducible."""
+    """Seed every RNG we touch. Deterministic given a fixed seed on CPU with
+    num_workers=0; GPU/MPS ops are not guaranteed bit-identical (cuDNN is pinned
+    but torch.use_deterministic_algorithms is not forced). For hash determinism set
+    PYTHONHASHSEED in the launching environment (see run_all.sh) — assigning it here
+    has no effect on the already-running interpreter."""
     random.seed(seed)
     np.random.seed(seed)
-    os.environ["PYTHONHASHSEED"] = str(seed)
+    os.environ.setdefault("PYTHONHASHSEED", str(seed))  # affects child processes only
     try:
         import torch
 

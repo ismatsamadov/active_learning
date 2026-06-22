@@ -10,9 +10,16 @@ do NOT contain the structured fields (institution, price, duration, enrolment) a
 text — exactly why the thesis builds its NER input by composing those fields into a
 sentence (see the defence-deck slide-3 example). We do the same here, but from the
 REAL field values, and we fold the REAL description in as O-context. So every entity
-the model is asked to extract is a real value, surrounded by real free text. Labels
-carry a small annotation-noise rate (realistic; caps F1 below 1.0 as on any human-
-annotated corpus). ``tags_truth`` keeps the clean labels for reference.
+the model is asked to extract lives in a *composed field-sentence* built from a real
+column value; the description tokens are all-O context. Honest framing: this measures
+field-sentence labelling, not entity extraction from free prose.
+
+Splitting & noise. The train/test split is done at the COURSE level (every record of
+a course goes to the same side) so a course's surface forms — partner string, price,
+etc. — never appear on both sides (no leakage). Annotation noise (realistic; caps F1
+below 1.0 as on any human-annotated corpus) is injected into the TRAIN pool only; the
+test set keeps clean gold, so reported test F1 reflects true accuracy rather than the
+injected noise rate. ``tags_truth`` keeps the clean labels on every record.
 """
 from __future__ import annotations
 
@@ -187,7 +194,12 @@ def _corrupt(tags: List[str], rng, p: float) -> List[str]:
 def build_ner_corpus(courses: pd.DataFrame, seed: int = 7,
                      test_fraction: float = 0.2,
                      label_noise: float = DEFAULT_LABEL_NOISE) -> List[dict]:
-    """Each course -> 1-2 field sentences (gold BIO) + its real description (O-context)."""
+    """Each course -> 1-2 field sentences (gold BIO) + its real description (O-context).
+
+    The split is grouped by course_id (whole courses held out) so the same course's
+    surface forms cannot leak across train/test; annotation noise is applied to the
+    train pool only, leaving the test set with clean gold for honest evaluation.
+    """
     rng = np.random.default_rng(seed)
     records: List[dict] = []
     for row in courses.itertuples(index=False):
@@ -202,10 +214,19 @@ def build_ner_corpus(courses: pd.DataFrame, seed: int = 7,
                                 tokens=[t for t, _ in desc],
                                 tags=[g for _, g in desc]))
 
+    # --- grouped train/test split: assign WHOLE courses to a side so no course's
+    #     entity surface forms (partner, price, ...) appear in both train and test ---
+    course_ids = np.array(sorted({r["course_id"] for r in records}))
+    rng.shuffle(course_ids)
+    n_test_courses = int(round(len(course_ids) * test_fraction))
+    test_ids = {int(c) for c in course_ids[:n_test_courses]}
+
     rng.shuffle(records)
-    n_test = int(round(len(records) * test_fraction))
-    for k, r in enumerate(records):
-        r["split"] = "test" if k < n_test else "train_pool"
+    for r in records:
+        r["split"] = "test" if r["course_id"] in test_ids else "train_pool"
         r["tags_truth"] = list(r["tags"])
-        r["tags"] = _corrupt(r["tags"], rng, label_noise)   # noisy human labels (train+test)
+        # inject annotator noise into the TRAIN pool only; the test set keeps clean
+        # gold so reported F1 measures accuracy, not the injected noise rate.
+        if r["split"] == "train_pool":
+            r["tags"] = _corrupt(r["tags"], rng, label_noise)
     return records

@@ -18,5 +18,5 @@ __version__ = "1.0.0"
 ENTITY_TYPES = ["ORG", "CAT", "PRICE", "DUR", "ENROLL", "LEVEL"]
 
 BIO_TAGS = ["O"] + [f"{p}-{e}" for e in ENTITY_TYPES for p in ("B", "I")]
-# -> ['O', 'B-ORG', 'I-ORG', 'B-CAT', 'I-CAT', 'B-PRICE', 'I-PRICE',
-#     'B-DUR', 'I-DUR', 'B-ENROLL', 'I-ENROLL']
+# -> 13 tags: ['O', 'B-ORG', 'I-ORG', 'B-CAT', 'I-CAT', 'B-PRICE', 'I-PRICE',
+#     'B-DUR', 'I-DUR', 'B-ENROLL', 'I-ENROLL', 'B-LEVEL', 'I-LEVEL']

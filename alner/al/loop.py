@@ -15,6 +15,7 @@ import torch
 
 from ..ner.data import Vocab
 from ..ner.train import evaluate, train_model
+from ..utils import set_seed
 from . import strategies as S
 
 
@@ -32,6 +33,10 @@ def run_active_learning(pool: List[dict], test: List[dict], vocab: Vocab, cfg,
     Pool-based active-learning loop (Settles, 2012): seed -> train -> score pool ->
     query -> annotate -> add -> retrain, until the labelling budget is spent.
     """
+    # pin global RNGs (python/numpy/torch/cuDNN) for the whole AL path, in addition
+    # to the local default_rng below — defence-in-depth so this trajectory has the
+    # same determinism guarantees as the baseline script.
+    set_seed(seed)
     rng = np.random.default_rng(seed)
     al = cfg.al
     n_pool = len(pool)
@@ -63,9 +68,13 @@ def run_active_learning(pool: List[dict], test: List[dict], vocab: Vocab, cfg,
         pool_local = np.where(~labeled_mask)[0]
         if len(pool_local) == 0:
             break
-        # subsample the pool for scoring (standard AL speedup; random sees full pool)
+        # Optional pool subsampling for scoring speed. Applied IDENTICALLY to every
+        # strategy (including random) so all arms choose from the same candidate set
+        # each round — never exempt the control arm, which would handicap the AL
+        # strategies. Disabled by default (cap=0) so uncertainty/hybrid see the true
+        # global argmax over the full pool.
         cap = getattr(al, "score_pool_cap", 0)
-        if strategy != "random" and cap and len(pool_local) > cap:
+        if cap and len(pool_local) > cap:
             pool_local = rng.choice(pool_local, size=cap, replace=False)
         pool_records = [pool[i] for i in pool_local]
         labeled_emb = None

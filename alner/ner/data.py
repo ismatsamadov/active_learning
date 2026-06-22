@@ -10,6 +10,10 @@ from .. import BIO_TAGS
 
 PAD, UNK = "<pad>", "<unk>"
 
+# Minimum char width per token so the char-CNN kernel always fits. Must be >=
+# ModelConfig.char_kernel (default 3); raise this if char_kernel is increased.
+vocab_kernel_min = 3
+
 
 class Vocab:
     """Word, character and tag vocabularies built from the training records."""
@@ -81,6 +85,9 @@ def make_collate(vocab: Vocab):
 
         words = torch.full((B, T), pad_w, dtype=torch.long)
         chars = torch.full((B, T, W), pad_c, dtype=torch.long)
+        # Padded tag positions are 0, which is ALSO the real "O" tag id (BIO_TAGS[0]).
+        # This is safe only because every consumer masks padding (CRF._score/_partition
+        # and evaluate() slice to `lengths`); never read `tags` without `mask`.
         tags = torch.zeros((B, T), dtype=torch.long)
         mask = torch.zeros((B, T), dtype=torch.bool)
         lengths = torch.zeros(B, dtype=torch.long)
@@ -99,7 +106,3 @@ def make_collate(vocab: Vocab):
                     lengths=lengths, indices=indices)
 
     return collate
-
-
-# minimum word width so the char-CNN kernel (default 3) always fits
-vocab_kernel_min = 3

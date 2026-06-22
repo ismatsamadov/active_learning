@@ -1,136 +1,136 @@
 {
   "field_recovery": {
-    "partner": 0.6115,
-    "category": 0.6115,
-    "price": 0.6091,
-    "duration_weeks": 0.6115,
-    "enrollment_count": 0.6113,
-    "level": 0.6331
+    "partner": 0.99,
+    "category": 1.0,
+    "price": 1.0,
+    "duration_weeks": 1.0,
+    "enrollment_count": 1.0,
+    "level": 1.0
   },
-  "n_courses": 417,
+  "n_courses": 200,
   "examples": [
     {
-      "course_id": 372,
-      "text": "Join this 2-week leadership & enterprise course from Starweaver at free .",
+      "course_id": 662,
+      "text": "Develop tools for assessing , managing , and treating pain to help ease distress for palliative care patients .",
       "extracted": {
-        "partner": "Starweaver",
-        "category": "Business & Management",
+        "partner": "University of Colorado",
+        "category": "Healthcare & Medicine",
         "price": 0.0,
-        "duration_weeks": 2,
-        "enrollment_count": null,
+        "duration_weeks": 5,
+        "enrollment_count": 321,
         "level": null
       },
       "truth": {
-        "partner": "Starweaver",
-        "category": "Business & Management",
+        "partner": "University of Colorado",
+        "category": "Healthcare & Medicine",
         "price": 0.0,
-        "duration_weeks": 2,
-        "enrollment_count": null,
+        "duration_weeks": 5,
+        "enrollment_count": 321.0,
         "level": null
       }
     },
     {
-      "course_id": 756,
-      "text": "Discover the genres and sounds of Korean traditional music to understand the role music plays in Korean culture and history .",
+      "course_id": 194,
+      "text": "Learn how the principles of intercultural contact may challenge the way in which you think about social interaction .",
       "extracted": {
-        "partner": null,
-        "category": null,
-        "price": null,
-        "duration_weeks": null,
-        "enrollment_count": null,
-        "level": null
+        "partner": "University of Leeds",
+        "category": "Language",
+        "price": 0.0,
+        "duration_weeks": 2,
+        "enrollment_count": 8112,
+        "level": "Introductory level"
       },
       "truth": {
-        "partner": "Hanyang University",
+        "partner": "University of Leeds",
+        "category": "Language",
+        "price": 0.0,
+        "duration_weeks": 2,
+        "enrollment_count": 8112.0,
+        "level": "Introductory level"
+      }
+    },
+    {
+      "course_id": 455,
+      "text": "Design one - of - a - kind monoprints and experiment with simple printmaking techniques that bring your art portfolio to life .",
+      "extracted": {
+        "partner": "Leeds Arts University",
         "category": "Creative Arts & Media",
         "price": 0.0,
         "duration_weeks": 6,
-        "enrollment_count": 580.0,
-        "level": null
-      }
-    },
-    {
-      "course_id": 24,
-      "text": "University of Leeds presents a modern languages course at Introductory level , running for 2-week , priced at GBP 39 , and has attracted 23,575 students .",
-      "extracted": {
-        "partner": "University of Leeds",
-        "category": "Language",
-        "price": 39.0,
-        "duration_weeks": 2,
-        "enrollment_count": 23575,
-        "level": "Introductory level"
-      },
-      "truth": {
-        "partner": "University of Leeds",
-        "category": "Language",
-        "price": 39.0,
-        "duration_weeks": 2,
-        "enrollment_count": 23575.0,
-        "level": "Introductory level"
-      }
-    },
-    {
-      "course_id": 475,
-      "text": "Get an inside look at Islamic finance with INCEIF , exploring preferred shares , Shariah compliance , and their wider implications .",
-      "extracted": {
-        "partner": null,
-        "category": null,
-        "price": null,
-        "duration_weeks": null,
         "enrollment_count": null,
-        "level": null
+        "level": "Introductory level"
       },
       "truth": {
-        "partner": "INCEIF",
-        "category": "Business & Management",
+        "partner": "Leeds Arts University",
+        "category": "Creative Arts & Media",
         "price": 0.0,
+        "duration_weeks": 6,
+        "enrollment_count": null,
+        "level": "Introductory level"
+      }
+    },
+    {
+      "course_id": 26,
+      "text": "University of Leeds presents a academic skills course at Introductory level , running for 2 weeks , priced at at no cost , and has attracted 7,794 students .",
+      "extracted": {
+        "partner": "University of Leeds",
+        "category": "Study Skills",
+        "price": 0.0,
+        "duration_weeks": 2,
+        "enrollment_count": 7794,
+        "level": "Introductory level"
+      },
+      "truth": {
+        "partner": "University of Leeds",
+        "category": "Study Skills",
+        "price": 0.0,
+        "duration_weeks": 2,
+        "enrollment_count": 7794.0,
+        "level": "Introductory level"
+      }
+    },
+    {
+      "course_id": 652,
+      "text": "Discover how environmental research can inform how we respond to and solve the major global environmental issues of today .",
+      "extracted": {
+        "partner": "University of York",
+        "category": "Nature & Environment",
+        "price": 59.0,
         "duration_weeks": 4,
-        "enrollment_count": null,
-        "level": "Introductory level"
-      }
-    },
-    {
-      "course_id": 826,
-      "text": "Explore the impact of climate change , with a specific focus on the risks and challenges faced in Malawi .",
-      "extracted": {
-        "partner": "The University of Edinburgh",
-        "category": "Nature & Environment",
-        "price": 0.0,
-        "duration_weeks": 5,
-        "enrollment_count": 390,
-        "level": "Introductory level"
-      },
-      "truth": {
-        "partner": "The University of Edinburgh",
-        "category": "Nature & Environment",
-        "price": 0.0,
-        "duration_weeks": 5,
-        "enrollment_count": 390.0,
-        "level": "Introductory level"
-      }
-    },
-    {
-      "course_id": 252,
-      "text": "Explora los desafíos que plantean los residuos electrónicos y descubre las oportunidades del reciclaje sostenible .",
-      "extracted": {
-        "partner": null,
-        "category": null,
-        "price": null,
-        "duration_weeks": null,
-        "enrollment_count": null,
+        "enrollment_count": 8744,
         "level": null
       },
       "truth": {
-        "partner": "EIT RawMaterials",
+        "partner": "University of York",
         "category": "Nature & Environment",
+        "price": 59.0,
+        "duration_weeks": 4,
+        "enrollment_count": 8744.0,
+        "level": null
+      }
+    },
+    {
+      "course_id": 583,
+      "text": "Bloomsbury Publishing presents a creative arts course at Introductory level , running for 2 weeks , priced at free of charge , and has attracted 1,518 participants .",
+      "extracted": {
+        "partner": "Bloomsbury Publishing",
+        "category": "Creative Arts & Media",
         "price": 0.0,
         "duration_weeks": 2,
-        "enrollment_count": null,
-        "level": null
+        "enrollment_count": 1518,
+        "level": "Introductory level"
+      },
+      "truth": {
+        "partner": "Bloomsbury Publishing",
+        "category": "Creative Arts & Media",
+        "price": 0.0,
+        "duration_weeks": 2,
+        "enrollment_count": 1518.0,
+        "level": "Introductory level"
       }
     }
   ],
-  "test_entity_f1": 0.8617300131061599,
+  "test_entity_f1": 0.9986842105263158,
   "integration": {
     "free_paid_ratio": {
       "from_ner": 15.18,
@@ -144,6 +144,6 @@
       "from_ner": 5,
       "from_truth": 5
     },
-    "n_courses_reconstructed": 999
+    "n_courses_reconstructed": 1000
   }
 }

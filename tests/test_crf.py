@@ -79,6 +79,30 @@ def main():
     assert path_pad == path_bf, f"masked viterbi {path_pad} vs {path_bf}"
     print(f"[ok] masking: partition & viterbi unaffected by padding")
 
+    # 3b) genuine mixed-length batch: two rows of DIFFERENT real lengths must each
+    #     match brute force at their OWN length (exercises frozen alpha/score for the
+    #     shorter row and per-row Viterbi backtracking — the trickiest path).
+    len_a, len_b = 5, 3
+    Tb = max(len_a, len_b)
+    em_a = torch.randn(1, Tb, K)
+    em_b = torch.randn(1, Tb, K)
+    em_batch = torch.cat([em_a, em_b], dim=0)                       # (2, Tb, K)
+    mask_batch = torch.zeros(2, Tb, dtype=torch.bool)
+    mask_batch[0, :len_a] = True
+    mask_batch[1, :len_b] = True
+    part = crf._partition(em_batch, mask_batch)
+    part_a = brute_force_logZ(crf, em_a, len_a).item()
+    part_b = brute_force_logZ(crf, em_b, len_b).item()
+    assert abs(part[0].item() - part_a) < 1e-4, f"mixed-batch row0 partition {part[0].item()} vs {part_a}"
+    assert abs(part[1].item() - part_b) < 1e-4, f"mixed-batch row1 partition {part[1].item()} vs {part_b}"
+    paths_batch = crf.decode(em_batch, mask_batch)
+    _, bf_a = brute_force_best(crf, em_a, len_a)
+    _, bf_b = brute_force_best(crf, em_b, len_b)
+    assert paths_batch[0] == bf_a, f"mixed-batch row0 viterbi {paths_batch[0]} vs {bf_a}"
+    assert paths_batch[1] == bf_b, f"mixed-batch row1 viterbi {paths_batch[1]} vs {bf_b}"
+    assert len(paths_batch[0]) == len_a and len(paths_batch[1]) == len_b
+    print(f"[ok] mixed-length batch (lengths {len_a},{len_b}): partition & viterbi match per-row brute force")
+
     # 4) gold score + nll sanity: nll >= 0 and finite
     tags = torch.tensor([path_bf])
     nll = crf(emissions, tags, mask, reduction="mean").item()

@@ -1,8 +1,11 @@
 """Demonstrate the NER -> structured-fields bridge on the held-out test set.
 
-Trains the BiLSTM-CRF on the full pool, runs it over the test descriptions, parses
-predicted entities back into course fields, and measures field-level recovery vs
-the true data. Writes worked examples (text -> extracted -> truth).
+Trains the BiLSTM-CRF on the full pool, runs it over the test records (the composed
+field-sentences carry the entities; descriptions are O-context), parses predicted
+entities back into course fields, and measures field-level recovery vs the true
+data. Writes worked examples (text -> extracted -> truth). Recovery reflects parsing
+composed field-sentences, not extraction from free prose, and is bounded by the
+train-time label-noise rate.
 
 Usage: python scripts/06_extraction_bridge.py [--fast]
 """
@@ -29,6 +32,7 @@ def main():
     args = ap.parse_args()
     cfg = fast_config() if args.fast else full_config()
     device = pick_device(args.device)
+    cfg.device = device              # keep cfg in sync with the device we actually use
 
     pool, test, vocab = load_corpus()
     set_seed(42)
